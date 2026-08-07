@@ -123,6 +123,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (currentState == PlayerState.Dying)
+            return;
+
         HandleInput();
         HandleForwardMovement();
         HandleLaneMovement();
@@ -386,13 +389,17 @@ public class PlayerController : MonoBehaviour
     {
         // Set vertical velocity = jump velocity
         verticalVelocity = jumpVelocity;
-        
+
         // Mark as jumping
         isJumping = true;
-        
+
         // Reset jump input (để không jump liên tục)
         lastJumpInputTime = 0f;
-        
+
+        // Trigger jump animation
+        if (m_animator != null)
+            m_animator.SetTrigger("Jump");
+
         Debug.Log("Player jumped!");
     }
     /// <summary>
@@ -469,6 +476,35 @@ public class PlayerController : MonoBehaviour
     public void SetSpeedMultiplier(float multiplier)
     {
         currentSpeed *= multiplier;
+    }
+
+    /// <summary>
+    /// Phát animation die (ngã ngang) và dừng điều khiển player.
+    /// </summary>
+    public void Die()
+    {
+        TriggerDie("Die");
+    }
+
+    /// <summary>
+    /// Phát animation die_2 (ngã ra sau nằm đất) và dừng điều khiển player.
+    /// </summary>
+    public void Die2()
+    {
+        TriggerDie("Die2");
+    }
+
+    private void TriggerDie(string triggerName)
+    {
+        if (currentState == PlayerState.Dying)
+            return;
+
+        currentState = PlayerState.Dying;
+        currentAnimatorState = AnimatorState.Dying;
+        currentSpeed = 0f;
+
+        if (m_animator != null)
+            m_animator.SetTrigger(triggerName);
     }
     #endregion
 }
