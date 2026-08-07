@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 {
     #region Serialized Fields
     [Header("Movement Settings")]
-    [SerializeField] private float forwardSpeed = 0.5f;
+    [SerializeField] private float forwardSpeed = 10f;
     [SerializeField] private float maxForwardSpeed = 20f;
     [SerializeField] private float speedIncreaseRate = 0.1f;
 
@@ -44,6 +44,20 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime = 0f;  // Thời điểm cuối cùng trên ground
     private float lastJumpInputTime = 0f; // Thời điểm cuối cùng nhấn jump
 
+
+    [Header("Player State")]
+    // Select anim
+    [SerializeField] private AnimatorState currentAnimatorState = AnimatorState.Idle;
+    public enum AnimatorState
+    {
+        Idle,
+        Running,
+        Jumping,
+        Falling,
+        Dying
+    }
+    private PlayerState currentState = PlayerState.Idle;
+    
     [Header("Debug")]
     [SerializeField] private bool showDebugUI = true;
     [SerializeField] private TextMeshProUGUI speedText;
@@ -59,10 +73,10 @@ public class PlayerController : MonoBehaviour
     private InputAction m_jumpAction;
     private Vector2 m_moveAmt;
     private Vector2 m_lookAmt;
-    private bool m_isJumping = false;
     // private Animation m_animation;
     // private Rigidbody m_rigidbody;
     private Animator m_animator;
+    private AnimatorStateInfo m_animatorStateInfo;
     #endregion
 
     #region Private Fields
@@ -101,6 +115,7 @@ public class PlayerController : MonoBehaviour
     {
         currentSpeed = forwardSpeed;
         targetPosition = transform.position;
+        // m_animator.SetTrigger("startWalking");
 
         // Tính jump velocity từ desired jump height
         CalculateJumpVelocity();
@@ -112,6 +127,7 @@ public class PlayerController : MonoBehaviour
         HandleForwardMovement();
         HandleLaneMovement();
         HandleVerticalMovement();
+        // HandlePlayerState();
     }
 
     private void OnGUI()
@@ -127,6 +143,7 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         InputActions.FindActionMap("Player").Enable();
+        m_animator.SetTrigger("startWalking");
     }
 
     private void OnDisable()
@@ -202,12 +219,23 @@ public class PlayerController : MonoBehaviour
     #region Movement Methods
     private void HandleForwardMovement()
     {
-        if (isPauseForward) return;
-
+        if (isPauseForward) {
+            // float animSpeed = isPauseForward ? 0f : Mathf.Lerp(0.4f, 0.9f, Mathf.InverseLerp(forwardSpeed, maxForwardSpeed, currentSpeed));
+            // m_animator.SetFloat("speed", animSpeed);
+            // m_animator.SetTrigger("stopWalking");
+            return;
+        }
+        // m_animator.SetTrigger("startWalking");
+        // m_animator.SetTrigger("stopWalking");
         if (currentSpeed < maxForwardSpeed)
         {
             currentSpeed += speedIncreaseRate * Time.deltaTime;
             currentSpeed = Mathf.Min(currentSpeed, maxForwardSpeed);
+            
+            // Movement vẫn dùng currentSpeed (10→20)
+            float animSpeed = Mathf.InverseLerp(forwardSpeed, maxForwardSpeed, currentSpeed);
+            // Map vào vùng blend tree hữu ích, ví dụ 0.1 (walk) → 0.6 (run)
+            m_animator.SetFloat("speed", Mathf.Lerp(0.1f, 0.6f, animSpeed));
         }
 
         Vector3 moveVector = transform.forward * currentSpeed;
@@ -386,6 +414,27 @@ public class PlayerController : MonoBehaviour
             verticalVelocity = Mathf.Max(verticalVelocity, -50f);
         }
     }
+    #endregion
+
+    #region Player State Methods
+    // private void HandlePlayerState()
+    // {
+    //     if (currentState != PlayerState.Idle) return;
+
+    //     if (characterController.isGrounded)
+    //     {
+    //         UpdatePlayerState(PlayerState.Running);
+    //     }
+    //     else
+    //     {
+    //         UpdatePlayerState(PlayerState.Falling);
+    //     }
+    // }
+    // private void UpdatePlayerState(PlayerState newState)
+    // {
+    //     currentState = newState;
+    //     Debug.Log($"Player state updated: {currentState}");
+    // }
     #endregion
 
     #region Validation
