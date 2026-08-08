@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Singleton quản lý tất cả object pools
@@ -13,6 +14,7 @@ public class PoolManager : MonoBehaviour
     
     private ObjectPool<Segment>[] segmentPools;
     private Transform segmentPoolParent;
+    private Dictionary<Segment, int> prefabToPoolIndex = new Dictionary<Segment, int>();
     
     private void Awake()
     {
@@ -47,6 +49,15 @@ public class PoolManager : MonoBehaviour
                 );
                 
                 Debug.Log($"Initialized pool for {segmentPrefabs[i].name}");
+            }
+        }
+
+        // Build lookup dictionary
+        for (int i = 0; i < segmentPrefabs.Length; i++)
+        {
+            if (segmentPrefabs[i] != null)
+            {
+                prefabToPoolIndex[segmentPrefabs[i]] = i;
             }
         }
     }
@@ -114,6 +125,17 @@ public class PoolManager : MonoBehaviour
         }
         
         Debug.LogWarning($"Could not find pool for segment: {segment.name}");
+    }
+
+    public Segment GetSegmentByPrefab(Segment prefab)
+    {
+        if (prefabToPoolIndex.TryGetValue(prefab, out int poolIndex))
+        {
+            return GetSegment(poolIndex);
+        }
+        
+        Debug.LogError($"No pool found for prefab: {prefab.name}");
+        return null;
     }
     #endregion
     
