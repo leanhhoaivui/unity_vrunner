@@ -21,6 +21,9 @@ public class SegmentManager : MonoBehaviour
     [SerializeField] private int maxConsecutiveObstacles = 3;
     [SerializeField] private int minEmptyBetweenObstacles = 1;
 
+    [Header("Performance")]
+    [SerializeField] private int maxSpawnsPerFrame = 2;
+
     private List<Segment> activeSegments = new List<Segment>();
     private Transform playerTransform;
     private Vector3 nextSpawnPosition = Vector3.zero;
@@ -45,19 +48,14 @@ public class SegmentManager : MonoBehaviour
     {
         if (playerTransform == null) return;
         
-        // // Check spawn condition
-        // float distanceToSpawnPoint = (nextSpawnPosition - playerTransform.position).z;
-        // if (distanceToSpawnPoint < spawnDistance)
-        // {
-        //     SpawnSegment();
-        // }
-
-        // Spawn logic
+        // Spawn (với limit)
+        int spawnsThisFrame = 0;
         float distanceToNext = nextSpawnPosition.z - playerTransform.position.z;
         
-        while (distanceToNext < spawnDistance)
+        while (distanceToNext < spawnDistance && spawnsThisFrame < maxSpawnsPerFrame)
         {
             SpawnSegment();
+            spawnsThisFrame++;
             distanceToNext = nextSpawnPosition.z - playerTransform.position.z;
         }
         
