@@ -141,6 +141,8 @@ public class PlayerController : MonoBehaviour
         GUI.Label(new Rect(10, 30, 200, 20), $"Distance: {transform.position.z:F2} m");
         GUI.Label(new Rect(10, 50, 200, 20), $"Current Lane: {currentLane}");
         GUI.Label(new Rect(10, 70, 200, 20), $"Target Lane: {targetLane}");
+        // FPS
+        GUI.Label(new Rect(10, 90, 200, 20), $"FPS: {1.0f / Time.deltaTime:F2}");
     }
 
     private void OnEnable()

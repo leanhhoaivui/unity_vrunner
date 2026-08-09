@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 0656c37c263ff4be196577471eaacf75, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 9e6bc5885c8ae4704bd4803403dd7225, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -152,9 +152,9 @@ MonoBehaviour:
   spawnDistance: 170
   despawnDistance: 50
   difficultyConfig: {fileID: 11400000, guid: 2d625a23cf54149128ffd7708b245f40, type: 2}
-  emptySegmentPrefab: {fileID: 0}
-  obstacleSegmentPrefab: {fileID: 0}
-  coinSegmentPrefab: {fileID: 0}
+  emptySegmentPrefab: {fileID: 1843408257498151180, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+  obstacleSegmentPrefab: {fileID: 1843408257498151180, guid: 674d12d4721d44aceb37049b621e5ee1, type: 3}
+  coinSegmentPrefab: {fileID: 1843408257498151180, guid: 51124b0b1b0324f078d624141d46dbb6, type: 3}
   maxConsecutiveObstacles: 3
   minEmptyBetweenObstacles: 1
   maxSpawnsPerFrame: 2
@@ -646,6 +646,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 447223386}
+  - component: {fileID: 447223387}
   m_Layer: 0
   m_Name: SceneRoot
   m_TagString: Untagged
@@ -671,6 +672,18 @@ Transform:
   - {fileID: 1766711903}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &447223387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447223385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04afa68d75962404d99a753c7f3db87a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FPSController
 --- !u!1 &666780451
 GameObject:
   m_ObjectHideFlags: 0
@@ -1840,6 +1853,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &2146039236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2146039238}
+  - component: {fileID: 2146039237}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2146039237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146039236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ea84a50014f4697a4d68d1531ee7d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwipeManager
+  swipeThreshold: 40
+--- !u!4 &2146039238
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146039236}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.90584, y: -20.00421, z: 35.84376}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &399102315562044483
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2558,6 +2616,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1435814932}
   - {fileID: 408005314}
+  - {fileID: 2146039238}
   - {fileID: 12068321}
   - {fileID: 1764320392}
   - {fileID: 447223386}

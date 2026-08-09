@@ -120,27 +120,71 @@ public class SegmentManager : MonoBehaviour
             return coinSegmentPrefab;
     }
     
+    // private bool IsValidSegment(Segment prefab)
+    // {
+    //     // Rule 1: Không quá nhiều obstacle liên tiếp
+    //     if (prefab == obstacleSegmentPrefab)
+    //     {
+    //         int consecutiveObstacles = 0;
+    //         for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
+    //         {
+    //             if (recentSegmentTypes[i].Contains("Obstacle"))
+    //                 consecutiveObstacles++;
+    //             else
+    //                 break;
+    //         }
+            
+    //         if (consecutiveObstacles >= maxConsecutiveObstacles)
+    //             return false;
+    //     }
+        
+    //     // Rule 2: Cần empty segment giữa obstacles (optional)
+    //     // ... implement thêm rules nếu cần
+        
+    //     return true;
+    // }
+
     private bool IsValidSegment(Segment prefab)
     {
-        // Rule 1: Không quá nhiều obstacle liên tiếp
-        if (prefab == obstacleSegmentPrefab)
+        if (prefab != obstacleSegmentPrefab)
+            return true;
+
+        // Rule 1: đếm obstacle liên tiếp ở cuối history
+        int consecutiveObstacles = 0;
+        for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
         {
-            int consecutiveObstacles = 0;
-            for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
-            {
-                if (recentSegmentTypes[i].Contains("Obstacle"))
-                    consecutiveObstacles++;
-                else
-                    break;
-            }
-            
-            if (consecutiveObstacles >= maxConsecutiveObstacles)
-                return false;
+            if (recentSegmentTypes[i].Contains("Obstacle"))
+                consecutiveObstacles++;
+            else
+                break;
         }
-        
-        // Rule 2: Cần empty segment giữa obstacles (optional)
-        // ... implement thêm rules nếu cần
-        
+
+        if (consecutiveObstacles >= maxConsecutiveObstacles)
+            return false;
+
+        // Rule 2: chỉ enforce khi đã thoát cụm obstacle
+        if (minEmptyBetweenObstacles <= 0 || consecutiveObstacles > 0)
+            return true;
+
+        int emptyCount = 0;
+        bool foundObstacle = false;
+        for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
+        {
+            string type = recentSegmentTypes[i];
+            if (type.Contains("Obstacle"))
+            {
+                foundObstacle = true;
+                break;
+            }
+            if (type.Contains("Empty"))
+                emptyCount++;
+            else
+                break; // Coin / khác: không tính empty, dừng đếm
+        }
+
+        if (foundObstacle && emptyCount < minEmptyBetweenObstacles)
+            return false;
+
         return true;
     }
     
@@ -176,7 +220,7 @@ public class SegmentManager : MonoBehaviour
         totalDistance += segmentLength;
         nextSpawnPosition += Vector3.forward * segmentLength;
         
-        Debug.Log($"Spawned segment at {nextSpawnPosition.z}");
+        // Debug.Log($"Spawned segment at {nextSpawnPosition.z}");
     }
     
     private void DespawnOldSegments()
@@ -193,7 +237,7 @@ public class SegmentManager : MonoBehaviour
                 segment.ReturnToPool();
                 activeSegments.RemoveAt(i);
                 
-                Debug.Log($"Despawned segment at {segment.transform.position.z}");
+                // Debug.Log($"Despawned segment at {segment.transform.position.z}");
             }
         }
     }

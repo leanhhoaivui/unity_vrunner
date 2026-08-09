@@ -2423,7 +2423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Segment
   segmentName: Segment
-  segmentLength: 20
+  segmentLength: 40
   obstacleSpawns: {fileID: 3935058477976731234}
   coinSpawns: {fileID: 4816331301090413958}
   powerupSpawns: {fileID: 3135368778492883438}
