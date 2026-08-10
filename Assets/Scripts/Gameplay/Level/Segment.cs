@@ -28,6 +28,13 @@ public class Segment : MonoBehaviour
     [SerializeField] private Transform obstacleContainer; // Parent cho obstacles
     public Transform ObstacleContainer => obstacleContainer;
 
+    [Header("Coins")]
+    [SerializeField] private Transform coinContainer;
+    [SerializeField] private Transform[] coinSpawnPoints; // Positions để spawn coins
+
+    public Transform CoinContainer => coinContainer;
+    public Transform[] CoinSpawnPoints => coinSpawnPoints;
+
     #region MonoBehaviour
     private void Awake()
     {

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7213018444527352509}
   - component: {fileID: 410954212095227758}
   - component: {fileID: 2053951559354935920}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Obstacle_Ground
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -135,6 +135,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 693d180657c98485c9c444d38374bee9, type: 3}
       propertyPath: m_Name
       value: item-cone
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 693d180657c98485c9c444d38374bee9, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 377630223335105776}
   - component: {fileID: 3995516154451097247}
   - component: {fileID: 5096924121813335987}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Obstacle_Air
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -127,6 +127,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4f4c1e96b90c84bb592afd76d1c079d0, type: 3}
       propertyPath: m_Name
       value: track-narrow-straight
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4f4c1e96b90c84bb592afd76d1c079d0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

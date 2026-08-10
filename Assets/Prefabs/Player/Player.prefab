@@ -407,9 +407,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1176468132690583718}
   - component: {fileID: 5201852185736830124}
+  - component: {fileID: 3292913973240104188}
+  - component: {fileID: 1908294623782535745}
+  - component: {fileID: 3670328256955093215}
+  - component: {fileID: 5010304576005166519}
+  - component: {fileID: 5534644309887652400}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -422,8 +427,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7910264107840600656}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.44458, y: 1.4397, z: 0.22879}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -452,6 +457,149 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!136 &3292913973240104188
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!143 &1908294623782535745
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 1
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &3670328256955093215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eae0c958a4d62499985052ad133c9aeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  forwardSpeed: 10
+  maxForwardSpeed: 20
+  speedIncreaseRate: 0.1
+  gravity: -20
+  laneDistance: 3
+  laneChangeSpeed: 10
+  laneChangeCooldown: 0.3
+  jumpHeight: 3
+  coyoteTime: 0.1
+  jumpBufferTime: 0.1
+  currentAnimatorState: 0
+  showDebugUI: 1
+  speedText: {fileID: 0}
+  distanceText: {fileID: 0}
+  distanceTraveledText: {fileID: 0}
+  isPauseForward: 0
+  InputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &5010304576005166519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2aca6c48d0c64fc9afeb79a1f8f80dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCollision
+  isInvincible: 0
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  coinLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  powerupLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  deathVFX: {fileID: 7400115315667729757, guid: e12dd7a871a8d4ff4b26f4b4dc791710, type: 3}
+  deathSound: {fileID: 8300000, guid: af3b7cfa7de8f4323b7d45882cb5b462, type: 3}
+  coinSound: {fileID: 8300000, guid: c7aca1ee998094976839ca9516eead3d, type: 3}
+  powerupSound: {fileID: 8300000, guid: fa1a2b71627164c8b980685faaff834a, type: 3}
+  hurtSound: {fileID: 8300000, guid: 951041009fc5346128018aef695018d0, type: 3}
+  OnObstacleHit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7910264107840600656}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCoinCollect:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPowerupCollect:
+    m_PersistentCalls:
+      m_Calls: []
+  maxHealth: 3
+--- !u!114 &5534644309887652400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8acc2baffa5d4d29a9a360ace8175bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinMagnet
+  magnetActive: 1
+  magnetRadius: 5
+  coinLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &7943447657958005581
 GameObject:
   m_ObjectHideFlags: 0

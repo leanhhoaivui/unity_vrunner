@@ -139,22 +139,22 @@ public class PoolManager : MonoBehaviour
     }
     #endregion
     
-    #region Debug
-    private void OnGUI()
-    {
-        if (!Application.isPlaying) return;
+    // #region Debug
+    // private void OnGUI()
+    // {
+    //     if (!Application.isPlaying) return;
         
-        GUI.Label(new Rect(10, 150, 300, 20), "=== Segment Pools ===");
+    //     GUI.Label(new Rect(10, 150, 300, 20), "=== Segment Pools ===");
         
-        for (int i = 0; i < segmentPools.Length; i++)
-        {
-            string name = segmentPrefabs[i].name;
-            int available = segmentPools[i].AvailableCount;
-            int total = segmentPools[i].TotalCount;
+    //     for (int i = 0; i < segmentPools.Length; i++)
+    //     {
+    //         string name = segmentPrefabs[i].name;
+    //         int available = segmentPools[i].AvailableCount;
+    //         int total = segmentPools[i].TotalCount;
             
-            GUI.Label(new Rect(10, 170 + i * 20, 300, 20), 
-                $"{name}: {available}/{total} available");
-        }
-    }
-    #endregion
+    //         GUI.Label(new Rect(10, 170 + i * 20, 300, 20), 
+    //             $"{name}: {available}/{total} available");
+    //     }
+    // }
+    // #endregion
 }

@@ -106,4 +106,10 @@ public class Obstacle : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position, GetComponent<Collider>().bounds.size);
+    }
 }

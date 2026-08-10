@@ -1,6 +1,289 @@
 using UnityEngine;
+using UnityEngine.Events;
+using System.Collections;
 
-public class PlayerCollision
+/// <summary>
+/// Xử lý tất cả collision logic của Player
+/// </summary>
+public class PlayerCollision : MonoBehaviour
 {
+    [Header("Collision Settings")]
+    [SerializeField] private bool isInvincible = false; // Shield power-up sẽ set true
+    [SerializeField] private LayerMask obstacleLayer;   // Optional: dùng layer thay vì tag
+    [SerializeField] private LayerMask coinLayer;       // Optional: dùng layer thay vì tag
+    [SerializeField] private LayerMask powerupLayer;    // Optional: dùng layer thay vì tag
     
+    [Header("Effects")]
+    [SerializeField] private GameObject deathVFX;       // Particle effect khi chết
+    [SerializeField] private AudioClip deathSound;      // Sound effect khi chết
+    [SerializeField] private AudioClip coinSound;       // Sound effect collect coin
+    [SerializeField] private AudioClip powerupSound;    // Sound effect collect powerup
+    [SerializeField] private AudioClip hurtSound;       // Sound effect take damage
+    [Header("Events")]
+    public UnityEvent OnObstacleHit;     // Event khi hit obstacle
+    public UnityEvent<int> OnCoinCollect; // Event khi collect coin (int = coin value)
+    public UnityEvent<string> OnPowerupCollect; // Event khi collect powerup (string = type)
+    
+    [SerializeField] private int maxHealth = 3;
+    private int currentHealth;
+    
+    // Components
+    private PlayerController playerController;
+    private AudioSource audioSource;
+    
+    // State
+    private bool isDead = false;
+    
+    public bool IsInvincible
+    {
+        get => isInvincible;
+        set => isInvincible = value;
+    }
+    
+    private int totalObstacleHits = 0;
+    private int totalCoinsCollected = 0;
+
+    private void Awake()
+    {
+        playerController = GetComponent<PlayerController>();
+        audioSource = GetComponent<AudioSource>();
+        
+        // Add AudioSource nếu chưa có
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+    }
+    
+    private void Start()
+    {
+        currentHealth = maxHealth;
+    }
+    
+    /// <summary>
+    /// Detect trigger collisions
+    /// </summary>
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"Trigger with: {other.name}, tag: {other.tag}");
+        Debug.Log($"Trigger with: {other.gameObject.layer}, layer: {other.gameObject.layer}");
+
+        // Ignore nếu đã chết
+        if (isDead) return;
+        
+        // Check collision type bằng tag
+        // if (other.CompareTag("Obstacle"))
+        // {
+        //     HandleObstacleCollision(other);
+        // }
+        // else if (other.CompareTag("Coin"))
+        // {
+        //     HandleCoinCollection(other.gameObject);
+        // }
+        // else if (other.CompareTag("Powerup"))
+        // {
+        //     HandlePowerupCollection(other.gameObject);
+        // }
+
+        // Check collision type bằng layer
+        int otherLayer = other.gameObject.layer;
+        if (otherLayer == LayerMask.NameToLayer("ObstacleLayer"))
+        {
+            HandleObstacleCollision(other);
+        }
+        else if (otherLayer == LayerMask.NameToLayer("CollectibleLayer") && other.gameObject.CompareTag("Coin"))
+        {
+            HandleCoinCollection(other.gameObject);
+        }
+        else if (otherLayer == LayerMask.NameToLayer("CollectibleLayer") && other.gameObject.CompareTag("Powerup"))
+        {
+            HandlePowerupCollection(other.gameObject);
+        }
+        else
+        {
+            Debug.Log($"Player hit unknown object: {other.gameObject.name} on layer: {other.gameObject.layer} otherLayer={otherLayer}");
+        }
+    }
+    
+    /// <summary>
+    /// Xử lý va chạm với obstacle
+    /// </summary>
+    private void HandleObstacleCollision(Collider obstacleCollider)
+    {
+        // Nếu có shield (invincible), bỏ qua
+        if (isInvincible)
+        {
+            Debug.Log("Player hit obstacle but is invincible!");
+            // TODO: Destroy obstacle hoặc effect khác
+            return;
+        }
+        
+        Debug.Log($"Player hit obstacle: {obstacleCollider.name}");
+        
+        // Trigger death
+        // Die();
+        TakeDamage(1);
+    }
+    
+    /// <summary>
+    /// Xử lý collect coin
+    /// </summary>
+    private void HandleCoinCollection(GameObject coin)
+    {
+        Debug.Log("Coin collected!");
+        
+        // Play sound
+        if (coinSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(coinSound);
+        } else {
+            Debug.Log($"Coin sound is null or audioSource is null");
+        }
+        
+        // Get coin value (default: 1)
+        // int coinValue = 1;
+        
+        // Optional: Coin script có thể có custom value
+        Coin coinScript = coin.GetComponent<Coin>();
+        int coinValue = coinScript != null ? coinScript.Value : 1;
+        
+        // Trigger event
+        OnCoinCollect?.Invoke(coinValue);
+        
+        // Disable coin (return to pool)
+        // coin.SetActive(false)
+        
+        if (coinScript != null)
+            coinScript.Collect();
+        else
+            coin.SetActive(false);
+    }
+    
+    /// <summary>
+    /// Xử lý collect power-up
+    /// </summary>
+    private void HandlePowerupCollection(GameObject powerup)
+    {
+        Debug.Log("Power-up collected!");
+        
+        // Play sound
+        if (powerupSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(powerupSound);
+        } else {
+            Debug.Log($"Powerup sound is null or audioSource is null");
+        }
+        
+        // Get power-up type (sẽ implement trong Tutorial 11)
+        string powerupType = "unknown";
+        
+        // Optional: Powerup script
+        // Powerup powerupScript = powerup.GetComponent<Powerup>();
+        // if (powerupScript != null) powerupType = powerupScript.Type.ToString();
+        
+        // Trigger event
+        OnPowerupCollect?.Invoke(powerupType);
+        
+        // Disable power-up
+        powerup.SetActive(false);
+    }
+    
+    /// <summary>
+    /// Xử lý player chết
+    /// </summary>
+    public void Die()
+    {
+        if (isDead) return; // Prevent double death
+        
+        isDead = true;
+        
+        Debug.Log("Player died!");
+        PrintCollisionStats();
+        
+        // Play death sound
+        if (deathSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(deathSound);
+        } else {
+            Debug.Log($"Death sound is null or audioSource is null");
+        }
+        
+        // Spawn death VFX
+        if (deathVFX != null)
+        {
+            Instantiate(deathVFX, transform.position, Quaternion.identity);
+        }
+        
+        // Stop player movement
+        if (playerController != null)
+        {
+            playerController.enabled = false;
+        }
+        
+        // Trigger death event
+        OnObstacleHit?.Invoke();
+        
+        // TODO: Game Over logic sẽ implement trong Tutorial 16
+        // GameManager.Instance.GameOver();
+    }
+    
+    /// <summary>
+    /// Reset player state (cho retry)
+    /// </summary>
+    public void ResetState()
+    {
+        isDead = false;
+        isInvincible = false;
+    }
+
+    private void TakeDamage(int damage)
+    {
+        if (isInvincible) return;
+        
+        currentHealth -= damage;
+        
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            // Flash effect, play hurt sound
+            if (hurtSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(hurtSound);
+            } else {
+                Debug.Log($"Hurt sound is null or audioSource is null");
+            }
+
+            StartCoroutine(InvincibilityFrames(0.5f));
+        }
+    }
+
+    private IEnumerator InvincibilityFrames(float duration)
+    {
+        isInvincible = true;
+        
+        // Blink effect
+        float elapsed = 0f;
+        MeshRenderer renderer = GetComponentInChildren<MeshRenderer>();
+        
+        while (elapsed < duration)
+        {
+            renderer.enabled = !renderer.enabled; // Toggle visibility
+            yield return new WaitForSeconds(0.1f);
+            elapsed += 0.1f;
+        }
+        
+        renderer.enabled = true;
+        isInvincible = false;
+    }
+
+    public void PrintCollisionStats()
+    {
+        Debug.Log($"=== Collision Stats ===");
+        Debug.Log($"Obstacle Hits: {totalObstacleHits}");
+        Debug.Log($"Coins: {totalCoinsCollected}");
+    }
 }
