@@ -24,6 +24,10 @@ public class Segment : MonoBehaviour
     [Header("Pooling")]
     private int poolIndex = -1; // Track pool nào segment này thuộc về
 
+    [Header("Obstacles")]
+    [SerializeField] private Transform obstacleContainer; // Parent cho obstacles
+    public Transform ObstacleContainer => obstacleContainer;
+
     #region MonoBehaviour
     private void Awake()
     {
