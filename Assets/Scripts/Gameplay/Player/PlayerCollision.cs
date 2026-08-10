@@ -158,6 +158,9 @@ public class PlayerCollision : MonoBehaviour
             coinScript.Collect();
         else
             coin.SetActive(false);
+
+        // Add to score
+        ScoreManager.Instance.AddCoins(coinValue);
     }
     
     /// <summary>
@@ -167,6 +170,13 @@ public class PlayerCollision : MonoBehaviour
     {
         Debug.Log("Power-up collected!");
         
+        Powerup powerupScript = powerup.GetComponent<Powerup>();
+        if (powerupScript != null && powerupScript.Data != null)
+        {
+            PowerupManager.Instance.ActivatePowerup(powerupScript.Data);
+            powerupScript.Collect();
+        }
+
         // Play sound
         if (powerupSound != null && audioSource != null)
         {

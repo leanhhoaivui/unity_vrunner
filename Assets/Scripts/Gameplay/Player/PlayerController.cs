@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
-
+using System.Collections;
 
 /// <summary>
 /// Định nghĩa các lanes player có thể di chuyển
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float forwardSpeed = 10f;
     [SerializeField] private float maxForwardSpeed = 20f;
-    [SerializeField] private float speedIncreaseRate = 0.1f;
+    // [SerializeField] private float speedIncreaseRate = 0.1f;
 
     [Header("Gravity")]
     [SerializeField] private float gravity = -20f;
@@ -44,7 +44,6 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime = 0f;  // Thời điểm cuối cùng trên ground
     private float lastJumpInputTime = 0f; // Thời điểm cuối cùng nhấn jump
 
-
     [Header("Player State")]
     // Select anim
     [SerializeField] private AnimatorState currentAnimatorState = AnimatorState.Idle;
@@ -57,6 +56,14 @@ public class PlayerController : MonoBehaviour
         Dying
     }
     private PlayerState currentState = PlayerState.Idle;
+    
+    [Header("Speed Progression")]
+    [SerializeField] private bool enableSpeedRampup = true;
+    [SerializeField] private float speedIncreaseRate = 0.5f; // +0.5 units/s per 100m
+    [SerializeField] private float speedIncreaseInterval = 100f; // Mỗi 100 meters
+    [SerializeField] private float maxSpeed = 30f;
+
+    private float baseSpeed;
     
     [Header("Debug")]
     [SerializeField] private bool showDebugUI = true;
@@ -119,6 +126,13 @@ public class PlayerController : MonoBehaviour
 
         // Tính jump velocity từ desired jump height
         CalculateJumpVelocity();
+
+        baseSpeed = forwardSpeed;
+    
+        if (enableSpeedRampup)
+        {
+            StartCoroutine(SpeedRampupCoroutine());
+        }
     }
 
     private void Update()
@@ -421,6 +435,35 @@ public class PlayerController : MonoBehaviour
             
             // Clamp fall velocity (tránh rơi quá nhanh)
             verticalVelocity = Mathf.Max(verticalVelocity, -50f);
+        }
+    }
+
+    private IEnumerator SpeedRampupCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(10f); // Check mỗi 10 giây
+            
+            UpdateSpeed();
+        }
+    }
+    private void UpdateSpeed()
+    {
+        if (ScoreManager.Instance == null) return;
+        
+        float distance = ScoreManager.Instance.DistanceTraveled;
+        
+        // Calculate speed based on distance
+        int speedTier = Mathf.FloorToInt(distance / speedIncreaseInterval);
+        float newSpeed = baseSpeed + (speedTier * speedIncreaseRate);
+        
+        // Clamp to max
+        newSpeed = Mathf.Min(newSpeed, maxSpeed);
+        
+        if (newSpeed > forwardSpeed)
+        {
+            forwardSpeed = newSpeed;
+            Debug.Log($"Speed increased to {forwardSpeed} at distance {distance}m");
         }
     }
     #endregion
