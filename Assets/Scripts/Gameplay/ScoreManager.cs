@@ -56,6 +56,9 @@ public class ScoreManager : MonoBehaviour
     
     private void Update()
     {
+        if (GameManager.Instance == null) return;
+        if (GameManager.Instance.CurrentState != GameState.Playing) return;
+        
         UpdateDistance();
     }
     
@@ -96,7 +99,8 @@ public class ScoreManager : MonoBehaviour
         
         currentScore = Mathf.FloorToInt((distanceScore + coinScore) * scoreMultiplier);
         
-        OnScoreChanged?.Invoke(currentScore);
+        // OnScoreChanged?.Invoke(currentScore);
+        EventManager.Instance.TriggerScoreChanged(currentScore);
     }
     
     /// <summary>
@@ -123,7 +127,7 @@ public class ScoreManager : MonoBehaviour
             startPosition = player.position;
         }
         
-        OnScoreChanged?.Invoke(0);
+        // OnScoreChanged?.Invoke(0);
         OnCoinsChanged?.Invoke(0);
         OnDistanceChanged?.Invoke(0f);
     }

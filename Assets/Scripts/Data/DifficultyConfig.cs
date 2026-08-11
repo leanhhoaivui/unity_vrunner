@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "DifficultyConfig", menuName = "Game/Difficulty Config")]
+[CreateAssetMenu(fileName = "DifficultyConfig", menuName = "GameData/Difficulty Config")]
 public class DifficultyConfig : ScriptableObject
 {
     [Header("Speed Settings")]

@@ -123,7 +123,7 @@ public class PlayerCollision : MonoBehaviour
         
         // Trigger death
         // Die();
-        TakeDamage(1);
+        TakeDamage(1, obstacleCollider);
     }
     
     /// <summary>
@@ -202,7 +202,7 @@ public class PlayerCollision : MonoBehaviour
     /// <summary>
     /// Xử lý player chết
     /// </summary>
-    public void Die()
+    public void Die(Collider obstacleCollider)
     {
         if (isDead) return; // Prevent double death
         
@@ -228,14 +228,24 @@ public class PlayerCollision : MonoBehaviour
         // Stop player movement
         if (playerController != null)
         {
-            playerController.enabled = false;
+            playerController.Die(); // Dừng movement và animation.
+            playerController.enabled = false; // Dừng điều khiển player.
         }
         
         // Trigger death event
-        OnObstacleHit?.Invoke();
+        // OnObstacleHit?.Invoke();
+        Obstacle obstacle = obstacleCollider.GetComponent<Obstacle>();
+        EventManager.Instance.TriggerObstacleHit(obstacle.Type);
+        EventManager.Instance.TriggerPlayerDeath();
         
         // TODO: Game Over logic sẽ implement trong Tutorial 16
         // GameManager.Instance.GameOver();
+        
+        // Call GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.GameOver();
+        }
     }
     
     /// <summary>
@@ -247,7 +257,7 @@ public class PlayerCollision : MonoBehaviour
         isInvincible = false;
     }
 
-    private void TakeDamage(int damage)
+    private void TakeDamage(int damage, Collider obstacleCollider)
     {
         if (isInvincible) return;
         
@@ -255,7 +265,7 @@ public class PlayerCollision : MonoBehaviour
         
         if (currentHealth <= 0)
         {
-            Die();
+            Die(obstacleCollider);
         }
         else
         {

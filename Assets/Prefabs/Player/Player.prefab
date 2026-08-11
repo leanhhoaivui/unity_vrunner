@@ -412,6 +412,8 @@ GameObject:
   - component: {fileID: 3670328256955093215}
   - component: {fileID: 5010304576005166519}
   - component: {fileID: 5534644309887652400}
+  - component: {fileID: 6188057077194210863}
+  - component: {fileID: 2664568023480931852}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -445,7 +447,7 @@ Animator:
   m_GameObject: {fileID: 7910264107840600656}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 13635da0e218c473e8cecbe1954afd04, type: 2}
+  m_Controller: {fileID: 9100000, guid: e6bd82a5eab5c423f95198ffe45c5b72, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -519,7 +521,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   forwardSpeed: 10
   maxForwardSpeed: 20
-  speedIncreaseRate: 0.1
   gravity: -20
   laneDistance: 3
   laneChangeSpeed: 10
@@ -527,13 +528,16 @@ MonoBehaviour:
   jumpHeight: 3
   coyoteTime: 0.1
   jumpBufferTime: 0.1
-  currentAnimatorState: 0
-  showDebugUI: 1
+  playerAnimation: {fileID: 2664568023480931852}
+  enableSpeedRampup: 1
+  speedIncreaseRate: 0.1
+  speedIncreaseInterval: 100
+  maxSpeed: 30
+  showDebugUI: 0
   speedText: {fileID: 0}
   distanceText: {fileID: 0}
   distanceTraveledText: {fileID: 0}
   isPauseForward: 0
-  InputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &5010304576005166519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,19 +567,7 @@ MonoBehaviour:
   hurtSound: {fileID: 8300000, guid: 951041009fc5346128018aef695018d0, type: 3}
   OnObstacleHit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7910264107840600656}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnCoinCollect:
     m_PersistentCalls:
       m_Calls: []
@@ -595,11 +587,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8acc2baffa5d4d29a9a360ace8175bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinMagnet
-  magnetActive: 1
+  magnetActive: 0
   magnetRadius: 5
   coinLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &6188057077194210863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be0fba7530f654f9c920e82081641ffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpeedLinesVFX
+  speedLines: {fileID: 0}
+  playerController: {fileID: 3670328256955093215}
+  maxEmissionRate: 50
+  baseSpeed: 10
+--- !u!114 &2664568023480931852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7811a86d2eb94d5baf5a2bd76218839, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
+  animator: {fileID: 5201852185736830124}
+  playerController: {fileID: 3670328256955093215}
 --- !u!1 &7943447657958005581
 GameObject:
   m_ObjectHideFlags: 0

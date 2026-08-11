@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d2a1dc03d3fd42eda9c5ec752c449eb, type: 3}
+  m_Name: Segment_Medium
+  m_EditorClassIdentifier: Assembly-CSharp::SegmentData
+  segmentName: Segment_Medium
+  prefab: {fileID: 8908390463517620855, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+  spawnWeight: 1
+  minDistanceRequired: 30
+  difficultyLevel: 2
+  obstacleCount: 10
+  coinCount: 10
+  hasPowerup: 0

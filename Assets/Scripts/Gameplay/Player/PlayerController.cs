@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Collections;
 
@@ -36,7 +35,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float laneChangeCooldown = 0.3f;
 
     [Header("Jump Settings")]
-    [SerializeField] private float jumpHeight = 3f;        // Chiều cao nhảy (units)
+    [SerializeField] private float jumpHeight = 2f;        // Chiều cao nhảy (units)
     [SerializeField] private float coyoteTime = 0.1f;      // Thời gian nhảy sau khi rời ground
     [SerializeField] private float jumpBufferTime = 0.1f;  // Thời gian buffer input
     private bool isJumping = false;       // Đang trong trạng thái jump
@@ -44,18 +43,10 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime = 0f;  // Thời điểm cuối cùng trên ground
     private float lastJumpInputTime = 0f; // Thời điểm cuối cùng nhấn jump
 
-    [Header("Player State")]
-    // Select anim
-    [SerializeField] private AnimatorState currentAnimatorState = AnimatorState.Idle;
-    public enum AnimatorState
-    {
-        Idle,
-        Running,
-        Jumping,
-        Falling,
-        Dying
-    }
-    private PlayerState currentState = PlayerState.Idle;
+    [Header("Animation")]
+    [SerializeField] private PlayerAnimation playerAnimation;
+    private bool wasGrounded = true;
+    private PlayerState currentState = PlayerState.Normal;
     
     [Header("Speed Progression")]
     [SerializeField] private bool enableSpeedRampup = true;
@@ -66,24 +57,11 @@ public class PlayerController : MonoBehaviour
     private float baseSpeed;
     
     [Header("Debug")]
-    [SerializeField] private bool showDebugUI = true;
+    [SerializeField] private bool showDebugUI = false;
     [SerializeField] private TextMeshProUGUI speedText;
     [SerializeField] private TextMeshProUGUI distanceText;
     [SerializeField] private TextMeshProUGUI distanceTraveledText;
     [SerializeField] private bool isPauseForward = false;
-    #endregion
-
-    #region Input Actions
-    public InputActionAsset InputActions;
-    private InputAction m_moveAction;
-    private InputAction m_lookAction;
-    private InputAction m_jumpAction;
-    private Vector2 m_moveAmt;
-    private Vector2 m_lookAmt;
-    // private Animation m_animation;
-    // private Rigidbody m_rigidbody;
-    private Animator m_animator;
-    private AnimatorStateInfo m_animatorStateInfo;
     #endregion
 
     #region Private Fields
@@ -97,6 +75,7 @@ public class PlayerController : MonoBehaviour
 
     private readonly Queue<bool> inputBuffer = new Queue<bool>();
     private float lastLaneChangeTime;
+    private bool inputSubscribed;
     #endregion
 
     #region Public Properties
@@ -108,18 +87,16 @@ public class PlayerController : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         ValidateComponents();
-
-        m_moveAction = InputActions.FindActionMap("Player").FindAction("Move");
-        m_lookAction = InputActions.FindActionMap("Player").FindAction("Look");
-        m_jumpAction = InputActions.FindActionMap("Player").FindAction("Jump");
-
-        // m_animation = GetComponent<Animation>();
-        // m_rigidbody = GetComponent<Rigidbody>();
-        m_animator = GetComponent<Animator>();
+        if (playerAnimation == null)
+            playerAnimation = GetComponent<PlayerAnimation>();
     }
 
     private void Start()
     {
+        // Fallback nếu OnEnable chạy trước InputManager.Awake
+        if (!inputSubscribed)
+            SubscribeInput();
+
         currentSpeed = forwardSpeed;
         targetPosition = transform.position;
         // m_animator.SetTrigger("startWalking");
@@ -140,11 +117,10 @@ public class PlayerController : MonoBehaviour
         if (currentState == PlayerState.Dying)
             return;
 
-        HandleInput();
+        ProcessLaneBuffer();
         HandleForwardMovement();
         HandleLaneMovement();
         HandleVerticalMovement();
-        // HandlePlayerState();
     }
 
     private void OnGUI()
@@ -161,13 +137,18 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        InputActions.FindActionMap("Player").Enable();
-        m_animator.SetTrigger("startWalking");
+        SubscribeInput();
     }
 
     private void OnDisable()
     {
-        InputActions.FindActionMap("Player").Disable();
+        UnsubscribeInput();
+    }
+
+    public void PlayRunning()
+    {
+        if (playerAnimation != null)
+            playerAnimation.PlayRunning();
     }
 
     private void OnDrawGizmos()
@@ -206,31 +187,51 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Input Handling Methods
-    /// <summary>
-    /// Xử lý input để chuyển lane (A/D hoặc Left/Right qua Input System Move)
-    /// </summary>
-    private void HandleInput()
+    private void SubscribeInput()
     {
-        m_moveAmt = m_moveAction.ReadValue<Vector2>();
-        // m_lookAmt = m_lookAction.ReadValue<Vector2>();
+        if (inputSubscribed || InputManager.Instance == null)
+            return;
 
-        // Chỉ nhận input ngang — tránh W/S vô tình enqueue lane change
-        if (m_moveAction.WasPressedThisFrame() && Mathf.Abs(m_moveAmt.x) > 0.5f)
-        {
-            inputBuffer.Enqueue(m_moveAmt.x > 0f);
-        }
+        InputManager.Instance.OnLaneLeft += OnLaneLeft;
+        InputManager.Instance.OnLaneRight += OnLaneRight;
+        InputManager.Instance.OnJump += OnJumpInput;
+        InputManager.Instance.OnSlide += OnSlideInput;
+        inputSubscribed = true;
+    }
 
+    private void UnsubscribeInput()
+    {
+        if (!inputSubscribed || InputManager.Instance == null)
+            return;
+
+        InputManager.Instance.OnLaneLeft -= OnLaneLeft;
+        InputManager.Instance.OnLaneRight -= OnLaneRight;
+        InputManager.Instance.OnJump -= OnJumpInput;
+        InputManager.Instance.OnSlide -= OnSlideInput;
+        inputSubscribed = false;
+    }
+
+    private void OnLaneLeft() => inputBuffer.Enqueue(false);
+
+    private void OnLaneRight() => inputBuffer.Enqueue(true);
+
+    private void OnJumpInput() => lastJumpInputTime = Time.time;
+
+    private void OnSlideInput()
+    {
+        // TODO: slide mechanic
+    }
+
+    /// <summary>
+    /// Xử lý queue đổi lane theo cooldown (giữ buffer khi spam input).
+    /// </summary>
+    private void ProcessLaneBuffer()
+    {
         if (inputBuffer.Count > 0 && Time.time - lastLaneChangeTime >= laneChangeCooldown)
         {
             bool moveRight = inputBuffer.Dequeue();
             ChangeLane(moveRight);
             lastLaneChangeTime = Time.time;
-        }
-
-        // Jump input - sử dụng Jump action
-        if (m_jumpAction.WasPressedThisFrame())
-        {
-            lastJumpInputTime = Time.time; // Lưu thời điểm nhấn jump
         }
     }
     #endregion
@@ -239,22 +240,13 @@ public class PlayerController : MonoBehaviour
     private void HandleForwardMovement()
     {
         if (isPauseForward) {
-            // float animSpeed = isPauseForward ? 0f : Mathf.Lerp(0.4f, 0.9f, Mathf.InverseLerp(forwardSpeed, maxForwardSpeed, currentSpeed));
-            // m_animator.SetFloat("speed", animSpeed);
-            // m_animator.SetTrigger("stopWalking");
             return;
         }
-        // m_animator.SetTrigger("startWalking");
-        // m_animator.SetTrigger("stopWalking");
+
         if (currentSpeed < maxForwardSpeed)
         {
             currentSpeed += speedIncreaseRate * Time.deltaTime;
             currentSpeed = Mathf.Min(currentSpeed, maxForwardSpeed);
-            
-            // Movement vẫn dùng currentSpeed (10→20)
-            float animSpeed = Mathf.InverseLerp(forwardSpeed, maxForwardSpeed, currentSpeed);
-            // Map vào vùng blend tree hữu ích, ví dụ 0.1 (walk) → 0.6 (run)
-            m_animator.SetFloat("speed", Mathf.Lerp(0.1f, 0.6f, animSpeed));
         }
 
         Vector3 moveVector = transform.forward * currentSpeed;
@@ -327,7 +319,9 @@ public class PlayerController : MonoBehaviour
     private void CalculateJumpVelocity()
     {
         // Formula: v = sqrt(2 * h * g)
-        jumpVelocity = Mathf.Sqrt(2f * jumpHeight * Mathf.Abs(gravity));
+        //Lưu ý: trọng lực là âm trong Unity, vì vậy chúng ta cần sử dụng Mathf.Abs(Gravity) để làm cho nó dương
+        //Vậy công thức phải là: v = sqrt(2 *h *-g)
+        jumpVelocity = Mathf.Sqrt(2f * jumpHeight * -gravity);
         Debug.Log($"Jump velocity calculated: {jumpVelocity}");
     }
     #endregion
@@ -353,20 +347,23 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void HandleVerticalMovement()
     {
+        bool grounded = characterController.isGrounded;
+
         // Update last grounded time
-        if (characterController.isGrounded)
+        if (grounded)
         {
             lastGroundedTime = Time.time;
             isJumping = false;
+
+            // Vừa chạm đất lại → PlayLand
+            if (!wasGrounded)
+                playerAnimation?.PlayLand();
         }
+
+        wasGrounded = grounded;
         
-        // Check jump conditions
-        bool canJump = CanJump();
-        
-        if (canJump)
-        {
+        if (CanJump())
             Jump();
-        }
         
         // Apply gravity
         ApplyGravity();
@@ -412,9 +409,7 @@ public class PlayerController : MonoBehaviour
         // Reset jump input (để không jump liên tục)
         lastJumpInputTime = 0f;
 
-        // Trigger jump animation
-        if (m_animator != null)
-            m_animator.SetTrigger("Jump");
+        playerAnimation?.PlayJump();
 
         Debug.Log("Player jumped!");
     }
@@ -493,9 +488,9 @@ public class PlayerController : MonoBehaviour
     private void ValidateComponents()
     {
         if (characterController == null)
-        {
             Debug.LogError($"[PlayerController] Missing CharacterController on {gameObject.name}");
-        }
+        if (playerAnimation == null)
+            Debug.LogWarning($"[PlayerController] Missing PlayerAnimation on {gameObject.name}");
     }
     private void OnValidate()
     {
@@ -528,28 +523,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void Die()
     {
-        TriggerDie("Die");
-    }
-
-    /// <summary>
-    /// Phát animation die_2 (ngã ra sau nằm đất) và dừng điều khiển player.
-    /// </summary>
-    public void Die2()
-    {
-        TriggerDie("Die2");
-    }
-
-    private void TriggerDie(string triggerName)
-    {
         if (currentState == PlayerState.Dying)
             return;
-
         currentState = PlayerState.Dying;
-        currentAnimatorState = AnimatorState.Dying;
         currentSpeed = 0f;
-
-        if (m_animator != null)
-            m_animator.SetTrigger(triggerName);
+        playerAnimation?.PlayDeath();
     }
     #endregion
 }

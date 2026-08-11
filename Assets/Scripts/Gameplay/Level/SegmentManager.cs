@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public class SegmentManager : MonoBehaviour
 {
+    [Header("Game Config")]
+    [SerializeField] private GameConfig gameConfig;
+
     [Header("Settings")]
     [SerializeField] private int initialSegmentCount = 5;
     [SerializeField] private float spawnDistance = 50f;
@@ -46,6 +49,9 @@ public class SegmentManager : MonoBehaviour
     
     private void Update()
     {
+        if (GameManager.Instance == null) return;
+        if (GameManager.Instance.CurrentState != GameState.Playing) return;
+
         if (playerTransform == null) return;
         
         // Spawn (với limit)
@@ -120,73 +126,73 @@ public class SegmentManager : MonoBehaviour
             return coinSegmentPrefab;
     }
     
-    // private bool IsValidSegment(Segment prefab)
-    // {
-    //     // Rule 1: Không quá nhiều obstacle liên tiếp
-    //     if (prefab == obstacleSegmentPrefab)
-    //     {
-    //         int consecutiveObstacles = 0;
-    //         for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
-    //         {
-    //             if (recentSegmentTypes[i].Contains("Obstacle"))
-    //                 consecutiveObstacles++;
-    //             else
-    //                 break;
-    //         }
-            
-    //         if (consecutiveObstacles >= maxConsecutiveObstacles)
-    //             return false;
-    //     }
-        
-    //     // Rule 2: Cần empty segment giữa obstacles (optional)
-    //     // ... implement thêm rules nếu cần
-        
-    //     return true;
-    // }
-
     private bool IsValidSegment(Segment prefab)
     {
-        if (prefab != obstacleSegmentPrefab)
-            return true;
-
-        // Rule 1: đếm obstacle liên tiếp ở cuối history
-        int consecutiveObstacles = 0;
-        for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
+        // Rule 1: Không quá nhiều obstacle liên tiếp
+        if (prefab == obstacleSegmentPrefab)
         {
-            if (recentSegmentTypes[i].Contains("Obstacle"))
-                consecutiveObstacles++;
-            else
-                break;
-        }
-
-        if (consecutiveObstacles >= maxConsecutiveObstacles)
-            return false;
-
-        // Rule 2: chỉ enforce khi đã thoát cụm obstacle
-        if (minEmptyBetweenObstacles <= 0 || consecutiveObstacles > 0)
-            return true;
-
-        int emptyCount = 0;
-        bool foundObstacle = false;
-        for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
-        {
-            string type = recentSegmentTypes[i];
-            if (type.Contains("Obstacle"))
+            int consecutiveObstacles = 0;
+            for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
             {
-                foundObstacle = true;
-                break;
+                if (recentSegmentTypes[i].Contains("Obstacle"))
+                    consecutiveObstacles++;
+                else
+                    break;
             }
-            if (type.Contains("Empty"))
-                emptyCount++;
-            else
-                break; // Coin / khác: không tính empty, dừng đếm
+            
+            if (consecutiveObstacles >= maxConsecutiveObstacles)
+                return false;
         }
-
-        if (foundObstacle && emptyCount < minEmptyBetweenObstacles)
-            return false;
-
+        
+        // Rule 2: Cần empty segment giữa obstacles (optional)
+        // ... implement thêm rules nếu cần
+        
         return true;
     }
+
+    // private bool IsValidSegment(Segment prefab)
+    // {
+    //     if (prefab != obstacleSegmentPrefab)
+    //         return true;
+
+    //     // Rule 1: đếm obstacle liên tiếp ở cuối history
+    //     int consecutiveObstacles = 0;
+    //     for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
+    //     {
+    //         if (recentSegmentTypes[i].Contains("Obstacle"))
+    //             consecutiveObstacles++;
+    //         else
+    //             break;
+    //     }
+
+    //     if (consecutiveObstacles >= maxConsecutiveObstacles)
+    //         return false;
+
+    //     // Rule 2: chỉ enforce khi đã thoát cụm obstacle
+    //     if (minEmptyBetweenObstacles <= 0 || consecutiveObstacles > 0)
+    //         return true;
+
+    //     int emptyCount = 0;
+    //     bool foundObstacle = false;
+    //     for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
+    //     {
+    //         string type = recentSegmentTypes[i];
+    //         if (type.Contains("Obstacle"))
+    //         {
+    //             foundObstacle = true;
+    //             break;
+    //         }
+    //         if (type.Contains("Empty"))
+    //             emptyCount++;
+    //         else
+    //             break; // Coin / khác: không tính empty, dừng đếm
+    //     }
+
+    //     if (foundObstacle && emptyCount < minEmptyBetweenObstacles)
+    //         return false;
+
+    //     return true;
+    // }
     
     private void SpawnSegment()
     {
@@ -221,6 +227,35 @@ public class SegmentManager : MonoBehaviour
         nextSpawnPosition += Vector3.forward * segmentLength;
         
         // Debug.Log($"Spawned segment at {nextSpawnPosition.z}");
+    }
+
+    private SegmentData SelectSegmentByWeight()
+    {
+        float totalWeight = 0f;
+        foreach (SegmentData data in gameConfig.segments)
+        {
+            if (ScoreManager.Instance.DistanceTraveled >= data.minDistanceRequired)
+            {
+                totalWeight += data.spawnWeight;
+            }
+        }
+        
+        float random = Random.Range(0f, totalWeight);
+        float currentWeight = 0f;
+        
+        foreach (SegmentData data in gameConfig.segments)
+        {
+            if (ScoreManager.Instance.DistanceTraveled >= data.minDistanceRequired)
+            {
+                currentWeight += data.spawnWeight;
+                if (random <= currentWeight)
+                {
+                    return data;
+                }
+            }
+        }
+        
+        return gameConfig.segments[0]; // Fallback
     }
     
     private void DespawnOldSegments()

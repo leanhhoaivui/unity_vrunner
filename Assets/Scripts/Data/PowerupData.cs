@@ -8,7 +8,7 @@ public enum PowerupType
     CoinMultiplier // Tăng số coin nhận được
 }
 
-[CreateAssetMenu(fileName = "PowerupData", menuName = "Game/Powerup Data")]
+[CreateAssetMenu(fileName = "PowerupData", menuName = "GameData/Powerup Data")]
 public class PowerupData : ScriptableObject
 {
     public PowerupType type;

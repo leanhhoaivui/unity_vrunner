@@ -44,7 +44,8 @@ public class PowerupManager : MonoBehaviour
         powerupTimers[data.type] = data.duration;
         
         // Trigger event
-        OnPowerupActivated?.Invoke(data.type, data.duration);
+        // OnPowerupActivated?.Invoke(data.type, data.duration);
+        EventManager.Instance.TriggerPowerupActivated(data.type, data.duration);
     }
     
     private IEnumerator PowerupDuration(PowerupData data)
@@ -96,6 +97,9 @@ public class PowerupManager : MonoBehaviour
     
     private void Update()
     {
+        if (GameManager.Instance == null) return;
+        if (GameManager.Instance.CurrentState != GameState.Playing) return;
+        
         // Handle magnet
         if (activePowerups.ContainsKey(PowerupType.Magnet))
         {
