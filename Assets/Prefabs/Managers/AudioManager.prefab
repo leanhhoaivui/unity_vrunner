@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2297025043872308640
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9194404316886508109}
+  - component: {fileID: 525889301406341788}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9194404316886508109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2297025043872308640}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &525889301406341788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2297025043872308640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b725a5ba3ea104a05b374618a4bc7ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  musicSource: {fileID: 0}
+  sfxSource: {fileID: 0}
+  menuMusic: {fileID: 8300000, guid: 59a060dda0104420691b325f58575920, type: 3}
+  gameMusic: {fileID: 8300000, guid: 59a060dda0104420691b325f58575920, type: 3}
+  jumpSound: {fileID: 8300000, guid: 0de94b4ac791a4e59ab55d4b4259b1ff, type: 3}
+  landSound: {fileID: 8300000, guid: 951041009fc5346128018aef695018d0, type: 3}
+  coinSound: {fileID: 8300000, guid: c7aca1ee998094976839ca9516eead3d, type: 3}
+  powerupSound: {fileID: 8300000, guid: fa1a2b71627164c8b980685faaff834a, type: 3}
+  hitSound: {fileID: 8300000, guid: 24ca69aea04f5440ea4db27b95870349, type: 3}
+  deathSound: {fileID: 8300000, guid: af3b7cfa7de8f4323b7d45882cb5b462, type: 3}
+  buttonClick: {fileID: 8300000, guid: 155005fdab5be49a08ffd0ae7d214e8c, type: 3}

@@ -15,10 +15,7 @@ public class PlayerCollision : MonoBehaviour
     
     [Header("Effects")]
     [SerializeField] private GameObject deathVFX;       // Particle effect khi chết
-    [SerializeField] private AudioClip deathSound;      // Sound effect khi chết
-    [SerializeField] private AudioClip coinSound;       // Sound effect collect coin
-    [SerializeField] private AudioClip powerupSound;    // Sound effect collect powerup
-    [SerializeField] private AudioClip hurtSound;       // Sound effect take damage
+
     [Header("Events")]
     public UnityEvent OnObstacleHit;     // Event khi hit obstacle
     public UnityEvent<int> OnCoinCollect; // Event khi collect coin (int = coin value)
@@ -29,7 +26,6 @@ public class PlayerCollision : MonoBehaviour
     
     // Components
     private PlayerController playerController;
-    private AudioSource audioSource;
     
     // State
     private bool isDead = false;
@@ -46,14 +42,6 @@ public class PlayerCollision : MonoBehaviour
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
-        audioSource = GetComponent<AudioSource>();
-        
-        // Add AudioSource nếu chưa có
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.playOnAwake = false;
-        }
     }
     
     private void Start()
@@ -66,8 +54,8 @@ public class PlayerCollision : MonoBehaviour
     /// </summary>
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"Trigger with: {other.name}, tag: {other.tag}");
-        Debug.Log($"Trigger with: {other.gameObject.layer}, layer: {other.gameObject.layer}");
+        // Debug.Log($"Trigger with: {other.name}, tag: {other.tag}");
+        // Debug.Log($"Trigger with: {other.gameObject.layer}, layer: {other.gameObject.layer}");
 
         // Ignore nếu đã chết
         if (isDead) return;
@@ -133,13 +121,6 @@ public class PlayerCollision : MonoBehaviour
     {
         Debug.Log("Coin collected!");
         
-        // Play sound
-        if (coinSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(coinSound);
-        } else {
-            Debug.Log($"Coin sound is null or audioSource is null");
-        }
         
         // Get coin value (default: 1)
         // int coinValue = 1;
@@ -161,6 +142,8 @@ public class PlayerCollision : MonoBehaviour
 
         // Add to score
         ScoreManager.Instance.AddCoins(coinValue);
+        // Play sound
+        EventManager.Instance?.TriggerCoinCollected(coinValue);
     }
     
     /// <summary>
@@ -178,12 +161,7 @@ public class PlayerCollision : MonoBehaviour
         }
 
         // Play sound
-        if (powerupSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(powerupSound);
-        } else {
-            Debug.Log($"Powerup sound is null or audioSource is null");
-        }
+        // EventManager.Instance?.TriggerPowerupActivated(powerupScript.Data.Type, powerupScript.Data.Duration);
         
         // Get power-up type (sẽ implement trong Tutorial 11)
         string powerupType = "unknown";
@@ -212,12 +190,9 @@ public class PlayerCollision : MonoBehaviour
         PrintCollisionStats();
         
         // Play death sound
-        if (deathSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(deathSound);
-        } else {
-            Debug.Log($"Death sound is null or audioSource is null");
-        }
+        // Obstacle obstacle = obstacleCollider.GetComponent<Obstacle>();
+        // Chỉ death sound — KHÔNG TriggerObstacleHit ở đây (tránh hit + death cùng lúc)
+        EventManager.Instance?.TriggerPlayerDeath();
         
         // Spawn death VFX
         if (deathVFX != null)
@@ -234,9 +209,7 @@ public class PlayerCollision : MonoBehaviour
         
         // Trigger death event
         // OnObstacleHit?.Invoke();
-        Obstacle obstacle = obstacleCollider.GetComponent<Obstacle>();
-        EventManager.Instance.TriggerObstacleHit(obstacle.Type);
-        EventManager.Instance.TriggerPlayerDeath();
+        EventManager.Instance?.TriggerPlayerDeath();
         
         // TODO: Game Over logic sẽ implement trong Tutorial 16
         // GameManager.Instance.GameOver();
@@ -270,12 +243,9 @@ public class PlayerCollision : MonoBehaviour
         else
         {
             // Flash effect, play hurt sound
-            if (hurtSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(hurtSound);
-            } else {
-                Debug.Log($"Hurt sound is null or audioSource is null");
-            }
+            Obstacle obstacle = obstacleCollider.GetComponent<Obstacle>();
+            if (obstacle != null)
+                EventManager.Instance?.TriggerObstacleHit(obstacle.Type);
 
             StartCoroutine(InvincibilityFrames(0.5f));
         }

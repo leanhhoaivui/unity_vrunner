@@ -134,6 +134,9 @@ public class GameManager : MonoBehaviour
         if (InputManager.Instance != null)
             InputManager.Instance.SetGameplayInputEnabled(true);
 
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayGameMusic();
+
         OnGameStart?.Invoke();
         Debug.Log("Game Started!");
     }

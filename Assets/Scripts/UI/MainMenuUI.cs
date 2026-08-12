@@ -87,6 +87,8 @@ public class MainMenuUI : MonoBehaviour
 
         RefreshStats();
         LoadSettingsSliders();
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayMenuMusic();
     }
 
     private void RefreshStats()
@@ -159,12 +161,16 @@ public class MainMenuUI : MonoBehaviour
     {
         if (SaveManager.Instance != null)
             SaveManager.Instance.SetMusicVolume(value);
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SetMusicVolume(value);
     }
 
     private void OnSfxVolumeChanged(float value)
     {
         if (SaveManager.Instance != null)
             SaveManager.Instance.SetSFXVolume(value);
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SetSFXVolume(value);
     }
 
     private IEnumerator FadeAndLoadScene(string sceneName)

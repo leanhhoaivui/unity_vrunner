@@ -211,11 +211,27 @@ public class PlayerController : MonoBehaviour
         inputSubscribed = false;
     }
 
-    private void OnLaneLeft() => inputBuffer.Enqueue(false);
+    private void OnLaneLeft() {
+        // Đổi chiều: bỏ các lệnh cùng chiều đang chờ
+        if (inputBuffer.Count > 0 && inputBuffer.Peek() == true)
+            inputBuffer.Clear();
+        // Chỉ giữ tối đa 1 lệnh
+        inputBuffer.Clear();
+        inputBuffer.Enqueue(false);
+    }
 
-    private void OnLaneRight() => inputBuffer.Enqueue(true);
+    private void OnLaneRight() {
+        // Đổi chiều: bỏ các lệnh cùng chiều đang chờ
+        if (inputBuffer.Count > 0 && inputBuffer.Peek() == true)
+            inputBuffer.Clear();
+        // Chỉ giữ tối đa 1 lệnh
+        inputBuffer.Clear();
+        inputBuffer.Enqueue(true);
+    }
 
-    private void OnJumpInput() => lastJumpInputTime = Time.time;
+    private void OnJumpInput() {
+        lastJumpInputTime = Time.time;
+    }
 
     private void OnSlideInput()
     {
@@ -410,6 +426,7 @@ public class PlayerController : MonoBehaviour
         lastJumpInputTime = 0f;
 
         playerAnimation?.PlayJump();
+        EventManager.Instance?.TriggerPlayerJump(jumpHeight);
 
         Debug.Log("Player jumped!");
     }
