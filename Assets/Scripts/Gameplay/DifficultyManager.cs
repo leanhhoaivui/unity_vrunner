@@ -60,10 +60,10 @@ public class DifficultyManager : MonoBehaviour
         }
     }
     
-    public float GetObstacleSpawnChance()
-    {
-        return currentTier != null ? currentTier.obstacleSpawnChance : 0.5f;
-    }
+    // public float GetObstacleSpawnChance()
+    // {
+    //     return currentTier != null ? currentTier.obstacleSpawnChance : 0.5f;
+    // }
     
     public float GetSpeedMultiplier()
     {

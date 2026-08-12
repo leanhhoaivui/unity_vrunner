@@ -3,13 +3,21 @@ public class AnalyticsTracker : MonoBehaviour
 {
     private void OnEnable()
     {
-        EventManager.Instance.OnGameOver += LogGameOver;
-        EventManager.Instance.OnDistanceMilestone += LogMilestone;
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.OnGameOver += LogGameOver;
+            EventManager.Instance.OnDistanceMilestone += LogMilestone;
+        }
     }
     
     private void OnDisable()
     {
-        // Unsubscribe...
+        
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.OnGameOver -= LogGameOver;
+            EventManager.Instance.OnDistanceMilestone -= LogMilestone;
+        }
     }
     
     private void LogGameOver()

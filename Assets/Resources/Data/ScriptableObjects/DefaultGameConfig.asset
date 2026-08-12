@@ -20,6 +20,7 @@ MonoBehaviour:
   initialSegments: 5
   difficultyConfig: {fileID: 11400000, guid: 2d625a23cf54149128ffd7708b245f40, type: 2}
   segments:
+  - {fileID: 11400000, guid: d0799a1de99974750abd1b0f7fe7b35e, type: 2}
   - {fileID: 11400000, guid: f7ded8abd7e1a44999e6c2c493df5a3d, type: 2}
   - {fileID: 11400000, guid: baa74a464c4bb45eaadeb1b223ff1d7f, type: 2}
   - {fileID: 11400000, guid: 3ebb4d46af945456cb30fa2bbe16475d, type: 2}

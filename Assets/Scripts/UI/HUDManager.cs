@@ -16,6 +16,8 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI magnetTimerText;
     [SerializeField] private TextMeshProUGUI shieldTimerText;
     [SerializeField] private TextMeshProUGUI speedTimerText;
+
+    private bool eventSubscribed = false;
     
     private void Start()
     {
@@ -32,9 +34,43 @@ public class HUDManager : MonoBehaviour
         //     PowerupManager.Instance.OnPowerupActivated.AddListener(ShowPowerupIcon);
         //     PowerupManager.Instance.OnPowerupExpired.AddListener(HidePowerupIcon);
         // }
-        
+
+
+        SubscribeEvents();
         // Hide powerup icons initially
         HideAllPowerupIcons();
+    }
+
+    private void SubscribeEvents()
+    {
+        if (eventSubscribed || EventManager.Instance == null)
+            return;
+        
+        EventManager.Instance.OnScoreChanged += UpdateScore;
+        EventManager.Instance.OnCoinsChanged += UpdateCoins;
+        EventManager.Instance.OnDistanceChanged += UpdateDistance;
+        eventSubscribed = true;
+    }
+
+    private void UnsubscribeEvents()
+    {
+        if (!eventSubscribed || EventManager.Instance == null)
+            return;
+            
+        EventManager.Instance.OnScoreChanged -= UpdateScore;
+        EventManager.Instance.OnCoinsChanged -= UpdateCoins;
+        EventManager.Instance.OnDistanceChanged -= UpdateDistance;
+        eventSubscribed = false;
+    }
+
+    private void OnEnable()
+    {
+        SubscribeEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeEvents();
     }
     
     private void Update()

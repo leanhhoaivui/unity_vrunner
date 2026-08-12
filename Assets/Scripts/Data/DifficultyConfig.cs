@@ -23,12 +23,12 @@ public class DifficultyTier
     public float speedMultiplier = 1f;
     // public float obstacleSpawnChance = 0.5f;
     
-    [Header("Segment Weights")]
+    [Header("Segment Weights (Not used)")]
     [Range(0f, 1f)] public float emptyWeight = 0.5f;
     [Range(0f, 1f)] public float obstacleWeight = 0.3f;
     [Range(0f, 1f)] public float coinWeight = 0.2f;
     
-    [Header("Spawn Settings")]
+    [Header("Spawn Settings (Not used)")]
     public float obstacleSpawnChance = 0.7f;
     public float coinSpawnChance = 0.8f;
     
