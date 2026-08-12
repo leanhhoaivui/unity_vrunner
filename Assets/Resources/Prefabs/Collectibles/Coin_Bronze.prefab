@@ -72,7 +72,7 @@ MonoBehaviour:
   rotationSpeed: 90
   magnetSpeed: 10
   magnetRange: 5
-  collectVFX: {fileID: 7400115315667729757, guid: f693aa426dc324a098a69000d737611e, type: 3}
+  collectVFX: {fileID: -531866712533856568, guid: f693aa426dc324a098a69000d737611e, type: 3}
   trailRenderer: {fileID: 5784421530467550268}
   floatAmplitude: 0.2
   floatFrequency: 2

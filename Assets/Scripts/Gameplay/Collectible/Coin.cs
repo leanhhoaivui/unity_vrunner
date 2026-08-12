@@ -17,11 +17,10 @@ public class Coin : MonoBehaviour
     private Transform playerTransform;
     
     [Header("Effects")]
-    [SerializeField] private GameObject collectVFX;
+    [SerializeField] private PooledVFX collectVFX;
     [SerializeField] private TrailRenderer trailRenderer;
     
-    private Collider coinCollider;
-    
+    private Collider coinCollider;    
     public int Value => value;
 
     [Header("Float Settings")]
@@ -155,10 +154,8 @@ public class Coin : MonoBehaviour
         SetTrailEnabled(false);
 
         // Spawn VFX
-        if (collectVFX != null)
-        {
-            Instantiate(collectVFX, transform.position, Quaternion.identity);
-        }
+        if (collectVFX != null && PoolManager.Instance != null)
+            PoolManager.Instance.GetVFX(collectVFX, transform.position);
         
         // Return to pool
         gameObject.SetActive(false);

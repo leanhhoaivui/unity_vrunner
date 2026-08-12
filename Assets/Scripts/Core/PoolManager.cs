@@ -17,6 +17,15 @@ public class PoolManager : MonoBehaviour
     private Transform segmentPoolParent;
     private Dictionary<int, int> prefabIdToPoolIndex = new Dictionary<int, int>();
     
+
+    [Header("Coin Pooling")][Header("VFX Pooling")]
+    [SerializeField] private PooledVFX[] vfxPrefabs;
+    [SerializeField] private int vfxPoolSize = 10;
+
+    private ObjectPool<PooledVFX>[] vfxPools;
+    private Dictionary<int, int> vfxPrefabIdToPoolIndex = new Dictionary<int, int>();
+    private Transform vfxPoolParent;
+
     private void Awake()
     {
         // Singleton pattern
@@ -32,11 +41,17 @@ public class PoolManager : MonoBehaviour
     
     private void InitializePools()
     {
+        InitializeSegmentPools();
+        InitializeVFXPools();
+    }
+
+    private void InitializeSegmentPools(){
         if (gameConfig == null || gameConfig.segments == null)
         {
             Debug.LogError("PoolManager: thiếu GameConfig / segments!");
             return;
         }
+
         // Gom Segment unique từ SegmentData
         List<Segment> prefabs = new List<Segment>();
         foreach (SegmentData data in gameConfig.segments)
@@ -64,8 +79,24 @@ public class PoolManager : MonoBehaviour
             Debug.Log($"Initialized pool [{i}] for {prefab.name}");
         }
     }
+
+    private void InitializeVFXPools()
+    {
+        vfxPoolParent = new GameObject("VFXPool").transform;
+        vfxPoolParent.SetParent(transform);
+        vfxPools = new ObjectPool<PooledVFX>[vfxPrefabs.Length];
+        vfxPrefabIdToPoolIndex.Clear();
+        for (int i = 0; i < vfxPrefabs.Length; i++)
+        {
+            PooledVFX prefab = vfxPrefabs[i];
+            if (prefab == null) continue;
+            vfxPools[i] = new ObjectPool<PooledVFX>(prefab, vfxPoolSize, vfxPoolParent);
+            vfxPrefabIdToPoolIndex[prefab.GetInstanceID()] = i;
+        }
+    }
     
-    #region Public Methods
+
+    #region Segment Pooling Methods
     /// <summary>
     /// Lấy segment từ pool (random)
     /// </summary>
@@ -176,4 +207,36 @@ public class PoolManager : MonoBehaviour
     //     }
     // }
     // #endregion
+
+    #region VFX Pooling Methods
+    public PooledVFX GetVFX(PooledVFX prefab, Vector3 position)
+    {
+        if (prefab == null) return null;
+        int id = prefab.GetInstanceID();
+        if (!vfxPrefabIdToPoolIndex.TryGetValue(id, out int poolIndex))
+        {
+            Debug.LogError($"No VFX pool for {prefab.name}. Gán prefab vào PoolManager.vfxPrefabs.");
+            return null;
+        }
+
+        ObjectPool<PooledVFX> pool = vfxPools[poolIndex];
+        if (pool.AvailableCount < 2)
+            pool.PreWarm(5);
+
+        PooledVFX vfx = pool.Get();
+        vfx.PoolIndex = poolIndex;
+        vfx.transform.SetPositionAndRotation(position, Quaternion.identity);
+        return vfx;
+    }
+
+    public void ReturnVFX(PooledVFX vfx)
+    {
+        if (vfx == null) return;
+        int i = vfx.PoolIndex;
+        if (i >= 0 && i < vfxPools.Length)
+            vfxPools[i].Return(vfx);
+        else
+            vfx.gameObject.SetActive(false);
+    }
+    #endregion
 }

@@ -19,19 +19,19 @@ public class HUDManager : MonoBehaviour
     
     private void Start()
     {
-        // Subscribe to events
-        if (ScoreManager.Instance != null)
-        {
-            ScoreManager.Instance.OnScoreChanged.AddListener(UpdateScore);
-            ScoreManager.Instance.OnCoinsChanged.AddListener(UpdateCoins);
-            ScoreManager.Instance.OnDistanceChanged.AddListener(UpdateDistance);
-        }
+        // // Subscribe to events
+        // if (ScoreManager.Instance != null)
+        // {
+        //     ScoreManager.Instance.OnScoreChanged.AddListener(UpdateScore);
+        //     ScoreManager.Instance.OnCoinsChanged.AddListener(UpdateCoins);
+        //     ScoreManager.Instance.OnDistanceChanged.AddListener(UpdateDistance);
+        // }
         
-        if (PowerupManager.Instance != null)
-        {
-            PowerupManager.Instance.OnPowerupActivated.AddListener(ShowPowerupIcon);
-            PowerupManager.Instance.OnPowerupExpired.AddListener(HidePowerupIcon);
-        }
+        // if (PowerupManager.Instance != null)
+        // {
+        //     PowerupManager.Instance.OnPowerupActivated.AddListener(ShowPowerupIcon);
+        //     PowerupManager.Instance.OnPowerupExpired.AddListener(HidePowerupIcon);
+        // }
         
         // Hide powerup icons initially
         HideAllPowerupIcons();

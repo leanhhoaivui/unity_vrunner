@@ -18,10 +18,10 @@ public class ScoreManager : MonoBehaviour
     [Header("Multipliers")]
     [SerializeField] private float scoreMultiplier = 1f;
     
-    [Header("Events")]
-    public UnityEvent<int> OnScoreChanged;
-    public UnityEvent<int> OnCoinsChanged;
-    public UnityEvent<float> OnDistanceChanged;
+    // [Header("Events")]
+    // public UnityEvent<int> OnScoreChanged;
+    // public UnityEvent<int> OnCoinsChanged;
+    // public UnityEvent<float> OnDistanceChanged;
     
     [Header("References")]
     [SerializeField] private Transform player;
@@ -74,7 +74,7 @@ public class ScoreManager : MonoBehaviour
         if (distance > distanceTraveled)
         {
             distanceTraveled = distance;
-            OnDistanceChanged?.Invoke(distanceTraveled);
+            // OnDistanceChanged?.Invoke(distanceTraveled);
             CalculateScore();
         }
     }
@@ -85,7 +85,7 @@ public class ScoreManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         coinsCollected += amount;
-        OnCoinsChanged?.Invoke(coinsCollected);
+        // OnCoinsChanged?.Invoke(coinsCollected);
         CalculateScore();
     }
     
@@ -128,8 +128,8 @@ public class ScoreManager : MonoBehaviour
         }
         
         // OnScoreChanged?.Invoke(0);
-        OnCoinsChanged?.Invoke(0);
-        OnDistanceChanged?.Invoke(0f);
+        // OnCoinsChanged?.Invoke(0);
+        // OnDistanceChanged?.Invoke(0f);
     }
     
     /// <summary>

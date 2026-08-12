@@ -152,10 +152,6 @@ MonoBehaviour:
   initialSegmentCount: 6
   spawnDistance: 170
   despawnDistance: 50
-  difficultyConfig: {fileID: 11400000, guid: 2d625a23cf54149128ffd7708b245f40, type: 2}
-  emptySegmentPrefab: {fileID: 1843408257498151180, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
-  obstacleSegmentPrefab: {fileID: 1843408257498151180, guid: 674d12d4721d44aceb37049b621e5ee1, type: 3}
-  coinSegmentPrefab: {fileID: 1843408257498151180, guid: 51124b0b1b0324f078d624141d46dbb6, type: 3}
   maxConsecutiveObstacles: 3
   minEmptyBetweenObstacles: 1
   maxSpawnsPerFrame: 2
@@ -563,15 +559,6 @@ MonoBehaviour:
   distanceMultiplier: 1
   coinScoreMultiplier: 10
   scoreMultiplier: 1
-  OnScoreChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCoinsChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDistanceChanged:
-    m_PersistentCalls:
-      m_Calls: []
   player: {fileID: 2720561600867127936}
 --- !u!1 &322267822
 GameObject:
@@ -2903,18 +2890,6 @@ MonoBehaviour:
   powerupManager: {fileID: 1816868712}
   gameOverUI: {fileID: 1853332525}
   pauseMenu: {fileID: 1166336316}
-  OnGameStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnGamePause:
-    m_PersistentCalls:
-      m_Calls: []
-  OnGameResume:
-    m_PersistentCalls:
-      m_Calls: []
-  OnGameOver:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &940581978
 GameObject:
   m_ObjectHideFlags: 0
@@ -4674,6 +4649,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PoolManager
   gameConfig: {fileID: 11400000, guid: c11ba406e1e804a4382b7aa0a1522f75, type: 2}
   segmentPoolSize: 10
+  vfxPrefabs:
+  - {fileID: -531866712533856568, guid: f693aa426dc324a098a69000d737611e, type: 3}
+  - {fileID: -2321086769816421174, guid: e12dd7a871a8d4ff4b26f4b4dc791710, type: 3}
+  vfxPoolSize: 10
 --- !u!4 &1764320392
 Transform:
   m_ObjectHideFlags: 0
@@ -4765,9 +4744,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyManager
   config: {fileID: 11400000, guid: 2d625a23cf54149128ffd7708b245f40, type: 2}
-  OnDifficultyChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1778869776
 GameObject:
   m_ObjectHideFlags: 0
@@ -4936,24 +4912,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PowerupManager
   playerController: {fileID: 2720561600867127938}
   playerCollision: {fileID: 2720561600867127937}
-  OnPowerupActivated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnPowerupExpired:
-    m_PersistentCalls:
-      m_Calls: []
   magnetRadius: 5
   coinLayer:
     serializedVersion: 2
