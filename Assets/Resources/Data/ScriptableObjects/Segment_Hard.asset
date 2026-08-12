@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Segment_Hard
   m_EditorClassIdentifier: Assembly-CSharp::SegmentData
   segmentName: Segment_Hard
-  prefab: {fileID: 8908390463517620855, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+  prefab: {fileID: 1843408257498151180, guid: b70e5d447852d40099d9fbc045bf61a6, type: 3}
   spawnWeight: 1
-  minDistanceRequired: 60
+  minDistanceRequired: 500
   difficultyLevel: 3
   obstacleCount: 15
   coinCount: 15

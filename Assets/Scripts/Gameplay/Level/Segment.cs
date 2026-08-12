@@ -7,6 +7,7 @@ using System.Collections.Generic;
 /// </summary>
 public class Segment : MonoBehaviour
 {
+    
     [Header("Segment Info")]
     [SerializeField] private string segmentName = "Segment";
     [SerializeField] private float segmentLength = 20f;
@@ -23,6 +24,7 @@ public class Segment : MonoBehaviour
     
     [Header("Pooling")]
     private int poolIndex = -1; // Track pool nào segment này thuộc về
+    public int PoolIndex => poolIndex;
 
     [Header("Obstacles")]
     [SerializeField] private Transform obstacleContainer; // Parent cho obstacles
@@ -128,6 +130,11 @@ public class Segment : MonoBehaviour
     /// </summary>
     public void ReturnToPool()
     {
+        if (PoolManager.Instance == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
         PoolManager.Instance.ReturnSegment(this);
     }
     #endregion

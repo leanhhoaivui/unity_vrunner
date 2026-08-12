@@ -9,12 +9,13 @@ public class PoolManager : MonoBehaviour
     public static PoolManager Instance { get; private set; }
     
     [Header("Segment Pooling")]
-    [SerializeField] private Segment[] segmentPrefabs;
+    [SerializeField] private GameConfig gameConfig;
     [SerializeField] private int segmentPoolSize = 10;
     
     private ObjectPool<Segment>[] segmentPools;
+    private Segment[] segmentPrefabs;
     private Transform segmentPoolParent;
-    private Dictionary<Segment, int> prefabToPoolIndex = new Dictionary<Segment, int>();
+    private Dictionary<int, int> prefabIdToPoolIndex = new Dictionary<int, int>();
     
     private void Awake()
     {
@@ -31,34 +32,36 @@ public class PoolManager : MonoBehaviour
     
     private void InitializePools()
     {
-        // Tạo parent object để organize hierarchy
+        if (gameConfig == null || gameConfig.segments == null)
+        {
+            Debug.LogError("PoolManager: thiếu GameConfig / segments!");
+            return;
+        }
+        // Gom Segment unique từ SegmentData
+        List<Segment> prefabs = new List<Segment>();
+        foreach (SegmentData data in gameConfig.segments)
+        {
+            if (data == null || data.prefab == null) continue;
+            Segment seg = data.prefab.GetComponent<Segment>();
+            if (seg == null)
+            {
+                Debug.LogError($"SegmentData '{data.name}' prefab thiếu Segment!");
+                continue;
+            }
+            if (!prefabs.Contains(seg))
+                prefabs.Add(seg);
+        }
+        segmentPrefabs = prefabs.ToArray();
+        segmentPools = new ObjectPool<Segment>[segmentPrefabs.Length];
+        prefabIdToPoolIndex.Clear();
         segmentPoolParent = new GameObject("SegmentPool").transform;
         segmentPoolParent.SetParent(transform);
-        
-        // Tạo pool cho mỗi segment prefab
-        segmentPools = new ObjectPool<Segment>[segmentPrefabs.Length];
-        
         for (int i = 0; i < segmentPrefabs.Length; i++)
         {
-            if (segmentPrefabs[i] != null)
-            {
-                segmentPools[i] = new ObjectPool<Segment>(
-                    segmentPrefabs[i],
-                    segmentPoolSize,
-                    segmentPoolParent
-                );
-                
-                Debug.Log($"Initialized pool for {segmentPrefabs[i].name}");
-            }
-        }
-
-        // Build lookup dictionary
-        for (int i = 0; i < segmentPrefabs.Length; i++)
-        {
-            if (segmentPrefabs[i] != null)
-            {
-                prefabToPoolIndex[segmentPrefabs[i]] = i;
-            }
+            Segment prefab = segmentPrefabs[i];
+            segmentPools[i] = new ObjectPool<Segment>(prefab, segmentPoolSize, segmentPoolParent);
+            prefabIdToPoolIndex[prefab.GetInstanceID()] = i;
+            Debug.Log($"Initialized pool [{i}] for {prefab.name}");
         }
     }
     
@@ -92,7 +95,13 @@ public class PoolManager : MonoBehaviour
             return null;
         }
         
-        return segmentPools[index].Get();
+        ObjectPool<Segment> pool = segmentPools[index];
+        if (pool.AvailableCount < 3)
+            pool.PreWarm(5);
+
+        Segment segment = pool.Get();
+        segment.SetPoolIndex(index); // quan trọng cho Return
+        return segment;
     }
     
     /// <summary>
@@ -114,29 +123,39 @@ public class PoolManager : MonoBehaviour
     /// </summary>
     public void ReturnSegment(Segment segment)
     {
-        // Tìm pool phù hợp dựa trên prefab name
+        if (segment == null) return;
+        // Ưu tiên poolIndex đã set lúc Get
+        // (cần Segment expose getter — xem mục 3)
+        int poolIndex = segment.PoolIndex;
+        if (poolIndex >= 0 && poolIndex < segmentPools.Length)
+        {
+            segmentPools[poolIndex].Return(segment);
+            return;
+        }
+        // Fallback theo tên (kém tin cậy hơn)
         for (int i = 0; i < segmentPrefabs.Length; i++)
         {
-            if (segment.name.Contains(segmentPrefabs[i].name))
+            if (segment.name.StartsWith(segmentPrefabs[i].name))
             {
-                ReturnSegment(segment, i);
+                segmentPools[i].Return(segment);
                 return;
             }
         }
-        
         Debug.LogWarning($"Could not find pool for segment: {segment.name}");
+        segment.gameObject.SetActive(false);
     }
 
     public Segment GetSegmentByPrefab(Segment prefab)
     {
-        if (prefabToPoolIndex.TryGetValue(prefab, out int poolIndex))
-        {
+        if (prefab == null) return null;
+        int id = prefab.GetInstanceID();
+        if (prefabIdToPoolIndex.TryGetValue(id, out int poolIndex))
             return GetSegment(poolIndex);
-        }
         
-        Debug.LogError($"No pool found for prefab: {prefab.name}");
+        Debug.LogError($"No pool found for prefab: {prefab.name}. " + "Kiểm tra prefab trong SegmentData có trùng GameConfig không.");
         return null;
     }
+
     #endregion
     
     // #region Debug

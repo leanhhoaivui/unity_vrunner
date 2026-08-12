@@ -4672,10 +4672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b50ade8dab94011a46d979726ca289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoolManager
-  segmentPrefabs:
-  - {fileID: 1843408257498151180, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
-  - {fileID: 1843408257498151180, guid: 674d12d4721d44aceb37049b621e5ee1, type: 3}
-  - {fileID: 1843408257498151180, guid: 51124b0b1b0324f078d624141d46dbb6, type: 3}
+  gameConfig: {fileID: 11400000, guid: c11ba406e1e804a4382b7aa0a1522f75, type: 2}
   segmentPoolSize: 10
 --- !u!4 &1764320392
 Transform:

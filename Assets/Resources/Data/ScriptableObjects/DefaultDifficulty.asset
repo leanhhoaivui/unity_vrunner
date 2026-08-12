@@ -17,9 +17,7 @@ MonoBehaviour:
   speedIncreaseRate: 0.5
   speedIncreaseInterval: 100
   tiers:
-  - tierName: Easy
-    startDistance: 0
-    name: 
+  - name: Easy
     minDistance: 0
     maxDistance: 200
     speedMultiplier: 1
@@ -28,9 +26,7 @@ MonoBehaviour:
     coinWeight: 0.2
     obstacleSpawnChance: 0
     coinSpawnChance: 0
-  - tierName: Medium
-    startDistance: 200
-    name: 
+  - name: Medium
     minDistance: 200
     maxDistance: 500
     speedMultiplier: 1
@@ -39,9 +35,7 @@ MonoBehaviour:
     coinWeight: 0.3
     obstacleSpawnChance: 0
     coinSpawnChance: 0
-  - tierName: Hard
-    startDistance: 500
-    name: 
+  - name: Hard
     minDistance: 500
     maxDistance: 0
     speedMultiplier: 1

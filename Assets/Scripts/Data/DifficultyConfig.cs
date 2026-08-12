@@ -11,24 +11,12 @@ public class DifficultyConfig : ScriptableObject
     
     [Header("Difficulty Tiers")]
     public DifficultyTier[] tiers;
-    
-    public DifficultyTier GetTierForDistance(float distance)
-    {
-        for (int i = tiers.Length - 1; i >= 0; i--)
-        {
-            if (distance >= tiers[i].startDistance)
-                return tiers[i];
-        }
-        return tiers[0];
-    }
+
 }
 
 [System.Serializable]
 public class DifficultyTier
 {
-    public string tierName;
-    public float startDistance;
-
     public string name;
     public float minDistance;
     public float maxDistance;
