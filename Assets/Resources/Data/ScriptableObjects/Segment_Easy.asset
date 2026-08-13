@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Segment_Easy
   m_EditorClassIdentifier: Assembly-CSharp::SegmentData
   segmentName: Segment_Easy
-  prefab: {fileID: 8908390463517620855, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
-  spawnWeight: 1
-  minDistanceRequired: 90
+  prefab: {fileID: 1843408257498151180, guid: c3a7dec90f1154875b8248deae2baa4c, type: 3}
+  spawnWeight: 0.2
+  minDistanceRequired: 2
   difficultyLevel: 1
   obstacleCount: 5
   coinCount: 5

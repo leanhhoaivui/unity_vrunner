@@ -6,22 +6,22 @@ public class ScoreManager : MonoBehaviour
     public static ScoreManager Instance;
     
     [Header("Score Settings")]
-    [SerializeField] private int coinsCollected = 0;
-    [SerializeField] private float distanceTraveled = 0f;
-    [SerializeField] private int currentScore = 0;
+    [SerializeField] private int coinsCollected = 0; // Số lượng coin đã thu thập
+    [SerializeField] private float distanceTraveled = 0f; // Khoảng cách đã di chuyển
+    [SerializeField] private int currentScore = 0; // Điểm hiện tại
     
     [Header("Score Calculation")]
-    [SerializeField] private int coinValue = 1;
+    [SerializeField] private int coinValue = 1; // Giá trị của 1 coin
     [SerializeField] private float distanceMultiplier = 1f; // 1 meter = 1 điểm
     [SerializeField] private int coinScoreMultiplier = 10; // 1 coin = 10 điểm
     
     [Header("Multipliers")]
-    [SerializeField] private float scoreMultiplier = 1f;
+    [SerializeField] private float scoreMultiplier = 1f; // Hệ số nhân điểm
     
-    [Header("Events")]
-    public UnityEvent<int> OnScoreChanged;
-    public UnityEvent<int> OnCoinsChanged;
-    public UnityEvent<float> OnDistanceChanged;
+    // [Header("Events")]
+    // public UnityEvent<int> OnScoreChanged;
+    // public UnityEvent<int> OnCoinsChanged;
+    // public UnityEvent<float> OnDistanceChanged;
     
     [Header("References")]
     [SerializeField] private Transform player;
@@ -74,7 +74,8 @@ public class ScoreManager : MonoBehaviour
         if (distance > distanceTraveled)
         {
             distanceTraveled = distance;
-            OnDistanceChanged?.Invoke(distanceTraveled);
+            // OnDistanceChanged?.Invoke(distanceTraveled);
+            EventManager.Instance.TriggerDistanceChanged(distanceTraveled);
             CalculateScore();
         }
     }
@@ -85,7 +86,8 @@ public class ScoreManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         coinsCollected += amount;
-        OnCoinsChanged?.Invoke(coinsCollected);
+        // OnCoinsChanged?.Invoke(coinsCollected);
+        EventManager.Instance.TriggerCoinsChanged(coinsCollected);
         CalculateScore();
     }
     
@@ -100,7 +102,7 @@ public class ScoreManager : MonoBehaviour
         currentScore = Mathf.FloorToInt((distanceScore + coinScore) * scoreMultiplier);
         
         // OnScoreChanged?.Invoke(currentScore);
-        EventManager.Instance.TriggerScoreChanged(currentScore);
+        EventManager.Instance?.TriggerScoreChanged(currentScore);
     }
     
     /// <summary>
@@ -128,8 +130,11 @@ public class ScoreManager : MonoBehaviour
         }
         
         // OnScoreChanged?.Invoke(0);
-        OnCoinsChanged?.Invoke(0);
-        OnDistanceChanged?.Invoke(0f);
+        // OnCoinsChanged?.Invoke(0);
+        // OnDistanceChanged?.Invoke(0f);
+        EventManager.Instance?.TriggerScoreChanged(0);
+        EventManager.Instance?.TriggerCoinsChanged(0);
+        EventManager.Instance?.TriggerDistanceChanged(0f);
     }
     
     /// <summary>

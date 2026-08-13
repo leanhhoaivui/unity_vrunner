@@ -11,9 +11,9 @@ public class PowerupManager : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private PlayerCollision playerCollision;
     
-    [Header("Events")]
-    public UnityEvent<PowerupType, float> OnPowerupActivated;
-    public UnityEvent<PowerupType> OnPowerupExpired;
+    // [Header("Events")]
+    // public UnityEvent<PowerupType, float> OnPowerupActivated;
+    // public UnityEvent<PowerupType> OnPowerupExpired;
     
     private Dictionary<PowerupType, Coroutine> activePowerups = new Dictionary<PowerupType, Coroutine>();
     private Dictionary<PowerupType, float> powerupTimers = new Dictionary<PowerupType, float>();
@@ -67,7 +67,7 @@ public class PowerupManager : MonoBehaviour
         activePowerups.Remove(data.type);
         powerupTimers.Remove(data.type);
         
-        OnPowerupExpired?.Invoke(data.type);
+        // OnPowerupExpired?.Invoke(data.type);
     }
     
     private void ApplyPowerupEffect(PowerupType type, bool activate)

@@ -22,7 +22,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip buttonClick;
     
-       private void Awake()
+    private void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;

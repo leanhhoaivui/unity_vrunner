@@ -12,14 +12,6 @@ public class SegmentManager : MonoBehaviour
     [SerializeField] private float despawnDistance = 30f;
     
 
-    [Header("Difficulty")]  [Header("Difficulty")]
-    [SerializeField] private DifficultyConfig difficultyConfig;
-    
-    [Header("Segment Types")]
-    [SerializeField] private Segment emptySegmentPrefab;
-    [SerializeField] private Segment obstacleSegmentPrefab;
-    [SerializeField] private Segment coinSegmentPrefab;
-    
     [Header("Validation")]
     [SerializeField] private int maxConsecutiveObstacles = 3;
     [SerializeField] private int minEmptyBetweenObstacles = 1;
@@ -80,153 +72,25 @@ public class SegmentManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Chọn segment dựa trên weighted random và difficulty
-    /// </summary>
-    private Segment SelectSegmentPrefab()
-    {
-        Segment selectedPrefab;
-        int attempts = 0;
-        
-        do
-        {
-            selectedPrefab = SelectSegmentPrefab_Internal();
-            attempts++;
-            
-            if (attempts > 10)
-            {
-                // Fallback: force empty segment
-                return emptySegmentPrefab;
-            }
-        }
-        while (!IsValidSegment(selectedPrefab));
-        
-        // Track segment type
-        recentSegmentTypes.Add(selectedPrefab.name);
-        if (recentSegmentTypes.Count > 10)
-        {
-            recentSegmentTypes.RemoveAt(0);
-        }
-        
-        return selectedPrefab;
-    }
-    
-    private Segment SelectSegmentPrefab_Internal()
-    {
-        // Logic từ bước 2
-        var tier = difficultyConfig.GetTierForDistance(totalDistance);
-        float totalWeight = tier.emptyWeight + tier.obstacleWeight + tier.coinWeight;
-        float randomValue = Random.Range(0f, totalWeight);
-        
-        if (randomValue < tier.emptyWeight)
-            return emptySegmentPrefab;
-        else if (randomValue < tier.emptyWeight + tier.obstacleWeight)
-            return obstacleSegmentPrefab;
-        else
-            return coinSegmentPrefab;
-    }
-    
-    private bool IsValidSegment(Segment prefab)
-    {
-        // Rule 1: Không quá nhiều obstacle liên tiếp
-        if (prefab == obstacleSegmentPrefab)
-        {
-            int consecutiveObstacles = 0;
-            for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
-            {
-                if (recentSegmentTypes[i].Contains("Obstacle"))
-                    consecutiveObstacles++;
-                else
-                    break;
-            }
-            
-            if (consecutiveObstacles >= maxConsecutiveObstacles)
-                return false;
-        }
-        
-        // Rule 2: Cần empty segment giữa obstacles (optional)
-        // ... implement thêm rules nếu cần
-        
-        return true;
-    }
-
-    // private bool IsValidSegment(Segment prefab)
-    // {
-    //     if (prefab != obstacleSegmentPrefab)
-    //         return true;
-
-    //     // Rule 1: đếm obstacle liên tiếp ở cuối history
-    //     int consecutiveObstacles = 0;
-    //     for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
-    //     {
-    //         if (recentSegmentTypes[i].Contains("Obstacle"))
-    //             consecutiveObstacles++;
-    //         else
-    //             break;
-    //     }
-
-    //     if (consecutiveObstacles >= maxConsecutiveObstacles)
-    //         return false;
-
-    //     // Rule 2: chỉ enforce khi đã thoát cụm obstacle
-    //     if (minEmptyBetweenObstacles <= 0 || consecutiveObstacles > 0)
-    //         return true;
-
-    //     int emptyCount = 0;
-    //     bool foundObstacle = false;
-    //     for (int i = recentSegmentTypes.Count - 1; i >= 0; i--)
-    //     {
-    //         string type = recentSegmentTypes[i];
-    //         if (type.Contains("Obstacle"))
-    //         {
-    //             foundObstacle = true;
-    //             break;
-    //         }
-    //         if (type.Contains("Empty"))
-    //             emptyCount++;
-    //         else
-    //             break; // Coin / khác: không tính empty, dừng đếm
-    //     }
-
-    //     if (foundObstacle && emptyCount < minEmptyBetweenObstacles)
-    //         return false;
-
-    //     return true;
-    // }
-    
     private void SpawnSegment()
     {
-        // Select prefab dựa trên difficulty
-        Segment prefab = SelectSegmentPrefab();
-        
-        // // Get segment từ pool (thay vì Instantiate)
-        // Segment segment = PoolManager.Instance.GetRandomSegment();
+        // Weighted random selection
+        SegmentData data = SelectSegmentByWeight();
+        if (data?.prefab == null) return;
 
-        // Get từ pool (cần update PoolManager để support specific prefab)
-        Segment segment = PoolManager.Instance.GetSegmentByPrefab(prefab);
-        
-        if (segment == null)
-        {
-            Debug.LogError("Failed to get segment from pool!");
-            return;
-        }
-        
-        // Setup position
-        segment.transform.position = nextSpawnPosition;
-        segment.transform.rotation = Quaternion.identity;
-        
+        Segment segment = PoolManager.Instance.GetSegmentByPrefab(data.prefab);
+        if (segment == null) return;
+
         // Add to active list
+        segment.transform.SetPositionAndRotation(nextSpawnPosition, Quaternion.identity);
         activeSegments.Add(segment);
         
-        // Update next spawn position
-        // nextSpawnPosition += Vector3.forward * segment.GetLength();
-
         // Update distance và spawn position
         float segmentLength = segment.GetLength();
         totalDistance += segmentLength;
         nextSpawnPosition += Vector3.forward * segmentLength;
         
-        // Debug.Log($"Spawned segment at {nextSpawnPosition.z}");
+        Debug.Log($"Spawned segment at {nextSpawnPosition.z}");
     }
 
     private SegmentData SelectSegmentByWeight()

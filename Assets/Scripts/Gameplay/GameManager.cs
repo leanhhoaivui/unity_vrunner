@@ -30,11 +30,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameOverUI gameOverUI;
     [SerializeField] private GameObject pauseMenu;
     
-    [Header("Events")]
-    public UnityEvent OnGameStart;
-    public UnityEvent OnGamePause;
-    public UnityEvent OnGameResume;
-    public UnityEvent OnGameOver;
+    // [Header("Events")]
+    // public UnityEvent OnGameStart;
+    // public UnityEvent OnGamePause;
+    // public UnityEvent OnGameResume;
+    // public UnityEvent OnGameOver;
     
     public GameState CurrentState => currentState;
     
@@ -137,7 +137,7 @@ public class GameManager : MonoBehaviour
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlayGameMusic();
 
-        OnGameStart?.Invoke();
+        // OnGameStart?.Invoke();
         Debug.Log("Game Started!");
     }
     
@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
             pauseMenu.SetActive(true);
         }
         
-        OnGamePause?.Invoke();
+        // OnGamePause?.Invoke();
         Debug.Log("Game Paused");
     }
     
@@ -181,7 +181,7 @@ public class GameManager : MonoBehaviour
             pauseMenu.SetActive(false);
         }
         
-        OnGameResume?.Invoke();
+        // OnGameResume?.Invoke();
         Debug.Log("Game Resumed");
     }
     
@@ -239,7 +239,7 @@ public class GameManager : MonoBehaviour
             gameOverUI.Show(finalScore, SaveManager.Instance.GetHighScore(), coins, distance);
         }
         
-        OnGameOver?.Invoke();
+        // OnGameOver?.Invoke();
     }
     
     /// <summary>

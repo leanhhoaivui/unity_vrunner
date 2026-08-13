@@ -7,8 +7,8 @@ public class DifficultyManager : MonoBehaviour
     
     [SerializeField] private DifficultyConfig config;
     
-    [Header("Events")]
-    public UnityEvent<DifficultyTier> OnDifficultyChanged;
+    // [Header("Events")]
+    // public UnityEvent<DifficultyTier> OnDifficultyChanged;
     
     private DifficultyTier currentTier;
     private float currentDistance;
@@ -52,7 +52,7 @@ public class DifficultyManager : MonoBehaviour
                 if (currentTier != tier)
                 {
                     currentTier = tier;
-                    OnDifficultyChanged?.Invoke(tier);
+                    // OnDifficultyChanged?.Invoke(tier);
                     Debug.Log($"Difficulty changed to: {tier.name}");
                 }
                 break;
@@ -60,10 +60,10 @@ public class DifficultyManager : MonoBehaviour
         }
     }
     
-    public float GetObstacleSpawnChance()
-    {
-        return currentTier != null ? currentTier.obstacleSpawnChance : 0.5f;
-    }
+    // public float GetObstacleSpawnChance()
+    // {
+    //     return currentTier != null ? currentTier.obstacleSpawnChance : 0.5f;
+    // }
     
     public float GetSpeedMultiplier()
     {

@@ -152,10 +152,6 @@ MonoBehaviour:
   initialSegmentCount: 6
   spawnDistance: 170
   despawnDistance: 50
-  difficultyConfig: {fileID: 11400000, guid: 2d625a23cf54149128ffd7708b245f40, type: 2}
-  emptySegmentPrefab: {fileID: 1843408257498151180, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
-  obstacleSegmentPrefab: {fileID: 1843408257498151180, guid: 674d12d4721d44aceb37049b621e5ee1, type: 3}
-  coinSegmentPrefab: {fileID: 1843408257498151180, guid: 51124b0b1b0324f078d624141d46dbb6, type: 3}
   maxConsecutiveObstacles: 3
   minEmptyBetweenObstacles: 1
   maxSpawnsPerFrame: 2
@@ -385,7 +381,7 @@ MonoBehaviour:
   target: {fileID: 2720561600867127936}
   autoFindTarget: 1
   smoothSpeed: 5
-  offset: {x: 0, y: 5, z: -10}
+  offset: {x: 0, y: 6, z: -8}
   useLookAt: 0
   lookAtTarget: {fileID: 2720561600867127936}
   lookAtOffset: {x: 0, y: 1, z: 0}
@@ -505,13 +501,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189068107}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.08715578, y: -0, z: -0, w: 0.9961947}
-  m_LocalPosition: {x: 1.12665, y: 4.9, z: -10.47021}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 0, y: 6, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1435814932}
-  m_LocalEulerAnglesHint: {x: 10, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!1 &198956030
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,15 +559,6 @@ MonoBehaviour:
   distanceMultiplier: 1
   coinScoreMultiplier: 10
   scoreMultiplier: 1
-  OnScoreChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCoinsChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDistanceChanged:
-    m_PersistentCalls:
-      m_Calls: []
   player: {fileID: 2720561600867127936}
 --- !u!1 &322267822
 GameObject:
@@ -2903,18 +2890,6 @@ MonoBehaviour:
   powerupManager: {fileID: 1816868712}
   gameOverUI: {fileID: 1853332525}
   pauseMenu: {fileID: 1166336316}
-  OnGameStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnGamePause:
-    m_PersistentCalls:
-      m_Calls: []
-  OnGameResume:
-    m_PersistentCalls:
-      m_Calls: []
-  OnGameOver:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &940581978
 GameObject:
   m_ObjectHideFlags: 0
@@ -4081,7 +4056,7 @@ Transform:
   m_GameObject: {fileID: 1435814931}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.12665, y: 0.1, z: 0.47021}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4325,6 +4300,68 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 1
+--- !u!1001 &1567162076
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1766711903}
+    m_Modifications:
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -40
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908390463517620855, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+      propertyPath: m_Name
+      value: Segment_Empty
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+--- !u!4 &1567162077 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4262520172703024327, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
+  m_PrefabInstance: {fileID: 1567162076}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1638396307
 GameObject:
   m_ObjectHideFlags: 0
@@ -4672,11 +4709,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b50ade8dab94011a46d979726ca289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoolManager
-  segmentPrefabs:
-  - {fileID: 1843408257498151180, guid: a38fe5da21a0647618f3fd9bfa3a65fd, type: 3}
-  - {fileID: 1843408257498151180, guid: 674d12d4721d44aceb37049b621e5ee1, type: 3}
-  - {fileID: 1843408257498151180, guid: 51124b0b1b0324f078d624141d46dbb6, type: 3}
+  gameConfig: {fileID: 11400000, guid: c11ba406e1e804a4382b7aa0a1522f75, type: 2}
   segmentPoolSize: 10
+  vfxPrefabs:
+  - {fileID: -531866712533856568, guid: f693aa426dc324a098a69000d737611e, type: 3}
+  - {fileID: -2321086769816421174, guid: e12dd7a871a8d4ff4b26f4b4dc791710, type: 3}
+  vfxPoolSize: 10
 --- !u!4 &1764320392
 Transform:
   m_ObjectHideFlags: 0
@@ -4720,7 +4758,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1567162077}
   m_Father: {fileID: 447223386}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1772635158
@@ -4768,9 +4807,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyManager
   config: {fileID: 11400000, guid: 2d625a23cf54149128ffd7708b245f40, type: 2}
-  OnDifficultyChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1778869776
 GameObject:
   m_ObjectHideFlags: 0
@@ -4939,24 +4975,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PowerupManager
   playerController: {fileID: 2720561600867127938}
   playerCollision: {fileID: 2720561600867127937}
-  OnPowerupActivated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnPowerupExpired:
-    m_PersistentCalls:
-      m_Calls: []
   magnetRadius: 5
   coinLayer:
     serializedVersion: 2
@@ -5913,6 +5931,10 @@ PrefabInstance:
       propertyPath: playerAnimation
       value: 
       objectReference: {fileID: 2720561600867127944}
+    - target: {fileID: 5010304576005166519, guid: 53fc095b101764864a5124f49f473433, type: 3}
+      propertyPath: deathVFX
+      value: 
+      objectReference: {fileID: -2321086769816421174, guid: e12dd7a871a8d4ff4b26f4b4dc791710, type: 3}
     - target: {fileID: 5010304576005166519, guid: 53fc095b101764864a5124f49f473433, type: 3}
       propertyPath: isInvincible
       value: 1

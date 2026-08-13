@@ -99,7 +99,6 @@ public class PlayerController : MonoBehaviour
 
         currentSpeed = forwardSpeed;
         targetPosition = transform.position;
-        // m_animator.SetTrigger("startWalking");
 
         // Tính jump velocity từ desired jump height
         CalculateJumpVelocity();
@@ -450,6 +449,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tăng tốc độ dựa trên khoảng cách
+    /// </summary>
     private IEnumerator SpeedRampupCoroutine()
     {
         while (true)
@@ -465,11 +467,11 @@ public class PlayerController : MonoBehaviour
         
         float distance = ScoreManager.Instance.DistanceTraveled;
         
-        // Calculate speed based on distance
+        // Tính tốc độ dựa trên khoảng cách
         int speedTier = Mathf.FloorToInt(distance / speedIncreaseInterval);
         float newSpeed = baseSpeed + (speedTier * speedIncreaseRate);
         
-        // Clamp to max
+        // Giữ ở mức tối đa
         newSpeed = Mathf.Min(newSpeed, maxSpeed);
         
         if (newSpeed > forwardSpeed)

@@ -14,12 +14,12 @@ public class PlayerCollision : MonoBehaviour
     [SerializeField] private LayerMask powerupLayer;    // Optional: dùng layer thay vì tag
     
     [Header("Effects")]
-    [SerializeField] private GameObject deathVFX;       // Particle effect khi chết
+    [SerializeField] private PooledVFX deathVFX;       // Particle effect khi chết
 
-    [Header("Events")]
-    public UnityEvent OnObstacleHit;     // Event khi hit obstacle
-    public UnityEvent<int> OnCoinCollect; // Event khi collect coin (int = coin value)
-    public UnityEvent<string> OnPowerupCollect; // Event khi collect powerup (string = type)
+    // [Header("Events")]
+    // public UnityEvent OnObstacleHit;     // Event khi hit obstacle
+    // public UnityEvent<int> OnCoinCollect; // Event khi collect coin (int = coin value)
+    // public UnityEvent<string> OnPowerupCollect; // Event khi collect powerup (string = type)
     
     [SerializeField] private int maxHealth = 3;
     private int currentHealth;
@@ -130,7 +130,7 @@ public class PlayerCollision : MonoBehaviour
         int coinValue = coinScript != null ? coinScript.Value : 1;
         
         // Trigger event
-        OnCoinCollect?.Invoke(coinValue);
+        // OnCoinCollect?.Invoke(coinValue);
         
         // Disable coin (return to pool)
         // coin.SetActive(false)
@@ -164,14 +164,14 @@ public class PlayerCollision : MonoBehaviour
         // EventManager.Instance?.TriggerPowerupActivated(powerupScript.Data.Type, powerupScript.Data.Duration);
         
         // Get power-up type (sẽ implement trong Tutorial 11)
-        string powerupType = "unknown";
+        // string powerupType = "unknown";
         
         // Optional: Powerup script
         // Powerup powerupScript = powerup.GetComponent<Powerup>();
         // if (powerupScript != null) powerupType = powerupScript.Type.ToString();
         
         // Trigger event
-        OnPowerupCollect?.Invoke(powerupType);
+        // OnPowerupCollect?.Invoke(powerupType);
         
         // Disable power-up
         powerup.SetActive(false);
@@ -195,10 +195,8 @@ public class PlayerCollision : MonoBehaviour
         EventManager.Instance?.TriggerPlayerDeath();
         
         // Spawn death VFX
-        if (deathVFX != null)
-        {
-            Instantiate(deathVFX, transform.position, Quaternion.identity);
-        }
+        if (deathVFX != null && PoolManager.Instance != null)
+            PoolManager.Instance.GetVFX(deathVFX, transform.position);
         
         // Stop player movement
         if (playerController != null)
