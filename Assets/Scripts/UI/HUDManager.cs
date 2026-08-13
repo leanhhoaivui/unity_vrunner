@@ -8,6 +8,7 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI coinsText;
     [SerializeField] private TextMeshProUGUI distanceText;
+    [SerializeField] private TextMeshProUGUI healthText;
     
     [Header("Powerup Icons")]
     [SerializeField] private GameObject magnetIcon;
@@ -49,6 +50,7 @@ public class HUDManager : MonoBehaviour
         EventManager.Instance.OnScoreChanged += UpdateScore;
         EventManager.Instance.OnCoinsChanged += UpdateCoins;
         EventManager.Instance.OnDistanceChanged += UpdateDistance;
+        EventManager.Instance.OnHealthChanged += UpdateHealth;
         eventSubscribed = true;
     }
 
@@ -60,6 +62,7 @@ public class HUDManager : MonoBehaviour
         EventManager.Instance.OnScoreChanged -= UpdateScore;
         EventManager.Instance.OnCoinsChanged -= UpdateCoins;
         EventManager.Instance.OnDistanceChanged -= UpdateDistance;
+        EventManager.Instance.OnHealthChanged -= UpdateHealth;
         eventSubscribed = false;
     }
 
@@ -91,6 +94,11 @@ public class HUDManager : MonoBehaviour
     private void UpdateDistance(float distance)
     {
         distanceText.text = $"{Mathf.FloorToInt(distance)}m";
+    }
+
+    private void UpdateHealth(int health)
+    {
+        healthText.text = health.ToString();
     }
     
     private void ShowPowerupIcon(PowerupType type, float duration)

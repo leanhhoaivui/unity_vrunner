@@ -47,6 +47,7 @@ public class PlayerCollision : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
+        EventManager.Instance?.TriggerHealthChanged(currentHealth);
     }
     
     /// <summary>
@@ -233,6 +234,7 @@ public class PlayerCollision : MonoBehaviour
         if (isInvincible) return;
         
         currentHealth -= damage;
+        EventManager.Instance?.TriggerHealthChanged(currentHealth);
         
         if (currentHealth <= 0)
         {

@@ -59,11 +59,13 @@ public class EventManager : MonoBehaviour
     public event Action<int> OnCoinsChanged; // int = new coins
     public event Action<float> OnDistanceChanged; // float = distance
     public event Action<float> OnDistanceMilestone; // float = distance milestone
+    public event Action<int> OnHealthChanged; // int = health
     
     public void TriggerScoreChanged(int score) => OnScoreChanged?.Invoke(score);
     public void TriggerCoinsChanged(int coins) => OnCoinsChanged?.Invoke(coins);
     public void TriggerDistanceChanged(float distance) => OnDistanceChanged?.Invoke(distance);
     public void TriggerDistanceMilestone(float distance) => OnDistanceMilestone?.Invoke(distance);
+    public void TriggerHealthChanged(int health) => OnHealthChanged?.Invoke(health);
     
     // ===== OBSTACLE EVENTS =====
     
