@@ -43,6 +43,10 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime = 0f;  // Thời điểm cuối cùng trên ground
     private float lastJumpInputTime = 0f; // Thời điểm cuối cùng nhấn jump
 
+    [Header("Hole Fall")]
+    [SerializeField] private float holeFallDepth = 1.5f;
+    [SerializeField] private float holeFallDuration = 0.5f;
+
     [Header("Animation")]
     [SerializeField] private PlayerAnimation playerAnimation;
     private bool wasGrounded = true;
@@ -76,10 +80,13 @@ public class PlayerController : MonoBehaviour
     private readonly Queue<bool> inputBuffer = new Queue<bool>();
     private float lastLaneChangeTime;
     private bool inputSubscribed;
+    private bool isFallingIntoHole;
     #endregion
 
     #region Public Properties
     public float DistanceTraveled { get; private set; }
+    public bool IsGrounded => characterController != null && characterController.enabled && characterController.isGrounded;
+    public bool IsFallingIntoHole => isFallingIntoHole;
     #endregion
 
     #region MonoBehaviour Callbacks
@@ -113,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (currentState == PlayerState.Dying)
+        if (currentState == PlayerState.Dying || isFallingIntoHole)
             return;
 
         ProcessLaneBuffer();
@@ -547,6 +554,39 @@ public class PlayerController : MonoBehaviour
         currentState = PlayerState.Dying;
         currentSpeed = 0f;
         playerAnimation?.PlayDeath();
+    }
+
+    /// <summary>
+    /// Giả lập rơi xuống hố: tắt CharacterController rồi lerp xuống dưới miệng hố.
+    /// </summary>
+    public IEnumerator FallIntoHole(Vector3 holeCenter)
+    {
+        if (isFallingIntoHole)
+            yield break;
+
+        isFallingIntoHole = true;
+        currentSpeed = 0f;
+        verticalVelocity = 0f;
+        inputBuffer.Clear();
+
+        if (characterController != null)
+            characterController.enabled = false;
+
+        Vector3 start = transform.position;
+        Vector3 end = new Vector3(holeCenter.x, holeCenter.y - holeFallDepth, holeCenter.z);
+        float elapsed = 0f;
+
+        while (elapsed < holeFallDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / holeFallDuration);
+            // Ease-in: rơi nhanh dần
+            float eased = t * t;
+            transform.position = Vector3.Lerp(start, end, eased);
+            yield return null;
+        }
+
+        transform.position = end;
     }
     #endregion
 }

@@ -55,26 +55,9 @@ public class PlayerCollision : MonoBehaviour
     /// </summary>
     private void OnTriggerEnter(Collider other)
     {
-        // Debug.Log($"Trigger with: {other.name}, tag: {other.tag}");
-        // Debug.Log($"Trigger with: {other.gameObject.layer}, layer: {other.gameObject.layer}");
-
         // Ignore nếu đã chết
         if (isDead) return;
         
-        // Check collision type bằng tag
-        // if (other.CompareTag("Obstacle"))
-        // {
-        //     HandleObstacleCollision(other);
-        // }
-        // else if (other.CompareTag("Coin"))
-        // {
-        //     HandleCoinCollection(other.gameObject);
-        // }
-        // else if (other.CompareTag("Powerup"))
-        // {
-        //     HandlePowerupCollection(other.gameObject);
-        // }
-
         // Check collision type bằng layer
         int otherLayer = other.gameObject.layer;
         if (otherLayer == LayerMask.NameToLayer("ObstacleLayer"))
@@ -94,6 +77,22 @@ public class PlayerCollision : MonoBehaviour
             Debug.Log($"Player hit unknown object: {other.gameObject.name} on layer: {other.gameObject.layer} otherLayer={otherLayer}");
         }
     }
+
+    /// <summary>
+    /// Bắt trường hợp nhảy vào volume Hole rồi đáp xuống (Enter đã bỏ qua khi airborne).
+    /// </summary>
+    private void OnTriggerStay(Collider other)
+    {
+        if (isDead || isInvincible) return;
+        if (other.gameObject.layer != LayerMask.NameToLayer("ObstacleLayer"))
+            return;
+
+        Obstacle obstacle = other.GetComponentInParent<Obstacle>();
+        if (obstacle == null || obstacle.Type != ObstacleType.Hole)
+            return;
+
+        HandleObstacleCollision(other);
+    }
     
     /// <summary>
     /// Xử lý va chạm với obstacle
@@ -104,15 +103,33 @@ public class PlayerCollision : MonoBehaviour
         if (isInvincible)
         {
             Debug.Log("Player hit obstacle but is invincible!");
-            // TODO: Destroy obstacle hoặc effect khác
+            return;
+        }
+
+        Obstacle obstacle = obstacleCollider.GetComponentInParent<Obstacle>();
+        if (obstacle != null && obstacle.Type == ObstacleType.Hole)
+        {
+            if (playerController == null || !playerController.IsGrounded)
+                return;
+            if (playerController.IsFallingIntoHole)
+                return;
+
+            StartCoroutine(FallAndDie(obstacleCollider));
             return;
         }
         
         Debug.Log($"Player hit obstacle: {obstacleCollider.name}");
-        
-        // Trigger death
-        // Die();
         TakeDamage(1, obstacleCollider);
+    }
+
+    /// <summary>
+    /// Rơi xuống hố rồi Game Over (không qua TakeDamage).
+    /// </summary>
+    private IEnumerator FallAndDie(Collider holeCollider)
+    {
+        Vector3 holeCenter = holeCollider.bounds.center;
+        yield return playerController.FallIntoHole(holeCenter);
+        Die(holeCollider);
     }
     
     /// <summary>

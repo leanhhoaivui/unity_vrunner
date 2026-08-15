@@ -560,20 +560,7 @@ MonoBehaviour:
   powerupLayer:
     serializedVersion: 2
     m_Bits: 64
-  deathVFX: {fileID: 7400115315667729757, guid: e12dd7a871a8d4ff4b26f4b4dc791710, type: 3}
-  deathSound: {fileID: 8300000, guid: af3b7cfa7de8f4323b7d45882cb5b462, type: 3}
-  coinSound: {fileID: 8300000, guid: c7aca1ee998094976839ca9516eead3d, type: 3}
-  powerupSound: {fileID: 8300000, guid: fa1a2b71627164c8b980685faaff834a, type: 3}
-  hurtSound: {fileID: 8300000, guid: 951041009fc5346128018aef695018d0, type: 3}
-  OnObstacleHit:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCoinCollect:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPowerupCollect:
-    m_PersistentCalls:
-      m_Calls: []
+  deathVFX: {fileID: -2321086769816421174, guid: e12dd7a871a8d4ff4b26f4b4dc791710, type: 3}
   maxHealth: 3
 --- !u!114 &5534644309887652400
 MonoBehaviour:
