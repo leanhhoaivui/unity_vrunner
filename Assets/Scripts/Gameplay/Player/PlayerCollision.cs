@@ -181,25 +181,10 @@ namespace VRunner.Gameplay.Player
             Powerup powerupScript = powerup.GetComponent<Powerup>();
             if (powerupScript != null && powerupScript.Data != null)
             {
-                PowerupManager.Instance.ActivatePowerup(powerupScript.Data);
+                if (PowerupManager.Instance != null)
+                    PowerupManager.Instance.ActivatePowerup(powerupScript.Data);
                 powerupScript.Collect();
             }
-
-            // Play sound
-            // EventManager.Instance?.TriggerPowerupActivated(powerupScript.Data.Type, powerupScript.Data.Duration);
-
-            // Get power-up type (sẽ implement trong Tutorial 11)
-            // string powerupType = "unknown";
-
-            // Optional: Powerup script
-            // Powerup powerupScript = powerup.GetComponent<Powerup>();
-            // if (powerupScript != null) powerupType = powerupScript.Type.ToString();
-
-            // Trigger event
-            // OnPowerupCollect?.Invoke(powerupType);
-
-            // Disable power-up
-            powerup.SetActive(false);
         }
 
         /// <summary>

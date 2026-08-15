@@ -1,5 +1,7 @@
 using UnityEngine;
+using VRunner.Core;
 using VRunner.Data;
+using VRunner.Gameplay.Level;
 
 namespace VRunner.Gameplay.Collectible
 {
@@ -11,8 +13,12 @@ namespace VRunner.Gameplay.Collectible
         [SerializeField] private float floatAmplitude = 0.3f;
         [SerializeField] private float floatFrequency = 2f;
 
+        [Header("Effects")]
+        [SerializeField] private PooledVFX collectVFX;
+
         private Vector3 startPosition;
         private Collider powerupCollider;
+        private bool isCollected;
 
         public PowerupData Data => data;
 
@@ -24,6 +30,7 @@ namespace VRunner.Gameplay.Collectible
 
         private void OnEnable()
         {
+            isCollected = false;
             startPosition = transform.localPosition;
         }
 
@@ -39,6 +46,12 @@ namespace VRunner.Gameplay.Collectible
 
         public void Collect()
         {
+            if (isCollected) return;
+            isCollected = true;
+
+            if (collectVFX != null && PoolManager.Instance != null)
+                PoolManager.Instance.GetVFX(collectVFX, transform.position);
+
             gameObject.SetActive(false);
         }
     }

@@ -15,8 +15,8 @@ namespace VRunner.Gameplay.Collectible
         [SerializeField] private float rotationSpeed = 90f;
 
         [Header("Magnet Settings")]
-        [SerializeField] private float magnetSpeed = 10f;
-        [SerializeField] private float magnetRange = 5f;
+        [SerializeField] private float magnetSpeed = 12f;
+        [SerializeField] private float magnetRange = 10f;
         private bool isMagnetized = false;
         private Transform playerTransform;
 

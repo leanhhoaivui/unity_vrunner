@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using VRunner.Core;
+using VRunner.Gameplay.Collectible;
 
 namespace VRunner.Gameplay.Level
 {
@@ -103,8 +104,23 @@ namespace VRunner.Gameplay.Level
         /// </summary>
         private void ResetSegment()
         {
-            // Clear spawned objects (sẽ implement sau khi có obstacle/coin pooling)
-            // Reset bất kỳ state nào khác
+            ReactivateCollectibles(coinSpawns);
+            ReactivateCollectibles(powerupSpawns);
+        }
+
+        private void ReactivateCollectibles(Transform parent)
+        {
+            if (parent == null) return;
+
+            foreach (Transform point in parent)
+            {
+                for (int i = 0; i < point.childCount; i++)
+                {
+                    Transform child = point.GetChild(i);
+                    if (child.GetComponent<Coin>() != null || child.GetComponent<Powerup>() != null)
+                        child.gameObject.SetActive(true);
+                }
+            }
         }
         #endregion
 

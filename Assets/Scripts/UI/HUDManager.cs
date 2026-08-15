@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using VRunner.Core;
 using VRunner.Data;
 using VRunner.Gameplay;
@@ -23,52 +22,12 @@ namespace VRunner.UI
         [SerializeField] private TextMeshProUGUI shieldTimerText;
         [SerializeField] private TextMeshProUGUI speedTimerText;
 
-        private bool eventSubscribed = false;
+        private bool eventSubscribed;
 
         private void Start()
         {
-            // // Subscribe to events
-            // if (ScoreManager.Instance != null)
-            // {
-            //     ScoreManager.Instance.OnScoreChanged.AddListener(UpdateScore);
-            //     ScoreManager.Instance.OnCoinsChanged.AddListener(UpdateCoins);
-            //     ScoreManager.Instance.OnDistanceChanged.AddListener(UpdateDistance);
-            // }
-
-            // if (PowerupManager.Instance != null)
-            // {
-            //     PowerupManager.Instance.OnPowerupActivated.AddListener(ShowPowerupIcon);
-            //     PowerupManager.Instance.OnPowerupExpired.AddListener(HidePowerupIcon);
-            // }
-
-
             SubscribeEvents();
-            // Hide powerup icons initially
             HideAllPowerupIcons();
-        }
-
-        private void SubscribeEvents()
-        {
-            if (eventSubscribed || EventManager.Instance == null)
-                return;
-
-            EventManager.Instance.OnScoreChanged += UpdateScore;
-            EventManager.Instance.OnCoinsChanged += UpdateCoins;
-            EventManager.Instance.OnDistanceChanged += UpdateDistance;
-            EventManager.Instance.OnHealthChanged += UpdateHealth;
-            eventSubscribed = true;
-        }
-
-        private void UnsubscribeEvents()
-        {
-            if (!eventSubscribed || EventManager.Instance == null)
-                return;
-
-            EventManager.Instance.OnScoreChanged -= UpdateScore;
-            EventManager.Instance.OnCoinsChanged -= UpdateCoins;
-            EventManager.Instance.OnDistanceChanged -= UpdateDistance;
-            EventManager.Instance.OnHealthChanged -= UpdateHealth;
-            eventSubscribed = false;
         }
 
         private void OnEnable()
@@ -81,67 +40,112 @@ namespace VRunner.UI
             UnsubscribeEvents();
         }
 
+        private void SubscribeEvents()
+        {
+            if (eventSubscribed || EventManager.Instance == null)
+                return;
+
+            EventManager.Instance.OnScoreChanged += UpdateScore;
+            EventManager.Instance.OnCoinsChanged += UpdateCoins;
+            EventManager.Instance.OnDistanceChanged += UpdateDistance;
+            EventManager.Instance.OnHealthChanged += UpdateHealth;
+            EventManager.Instance.OnPowerupActivated += ShowPowerupIcon;
+            EventManager.Instance.OnPowerupExpired += HidePowerupIcon;
+            eventSubscribed = true;
+        }
+
+        private void UnsubscribeEvents()
+        {
+            if (!eventSubscribed || EventManager.Instance == null)
+                return;
+
+            EventManager.Instance.OnScoreChanged -= UpdateScore;
+            EventManager.Instance.OnCoinsChanged -= UpdateCoins;
+            EventManager.Instance.OnDistanceChanged -= UpdateDistance;
+            EventManager.Instance.OnHealthChanged -= UpdateHealth;
+            EventManager.Instance.OnPowerupActivated -= ShowPowerupIcon;
+            EventManager.Instance.OnPowerupExpired -= HidePowerupIcon;
+            eventSubscribed = false;
+        }
+
         private void Update()
         {
+            // EventManager có thể Awake sau HUD
+            if (!eventSubscribed)
+                SubscribeEvents();
+
             UpdatePowerupTimers();
         }
 
         private void UpdateScore(int score)
         {
-            scoreText.text = $"Score: {score:N0}";
+            if (scoreText != null)
+                scoreText.text = $"Score: {score:N0}";
         }
 
         private void UpdateCoins(int coins)
         {
-            coinsText.text = coins.ToString();
+            if (coinsText != null)
+                coinsText.text = coins.ToString();
         }
 
         private void UpdateDistance(float distance)
         {
-            distanceText.text = $"{Mathf.FloorToInt(distance)}m";
+            if (distanceText != null)
+                distanceText.text = $"{Mathf.FloorToInt(distance)}m";
         }
 
         private void UpdateHealth(int health)
         {
-            healthText.text = health.ToString();
+            if (healthText != null)
+                healthText.text = health.ToString();
         }
 
         private void ShowPowerupIcon(PowerupType type, float duration)
         {
             GameObject icon = GetPowerupIcon(type);
             if (icon != null)
-            {
                 icon.SetActive(true);
-            }
+
+            TextMeshProUGUI timerText = GetPowerupTimerText(type);
+            if (timerText != null)
+                timerText.text = $"{Mathf.CeilToInt(duration)}s";
         }
 
         private void HidePowerupIcon(PowerupType type)
         {
             GameObject icon = GetPowerupIcon(type);
             if (icon != null)
-            {
                 icon.SetActive(false);
-            }
+
+            TextMeshProUGUI timerText = GetPowerupTimerText(type);
+            if (timerText != null)
+                timerText.text = string.Empty;
         }
 
         private void UpdatePowerupTimers()
         {
             if (PowerupManager.Instance == null) return;
 
-            UpdatePowerupTimer(PowerupType.Magnet, magnetTimerText);
-            UpdatePowerupTimer(PowerupType.Shield, shieldTimerText);
-            UpdatePowerupTimer(PowerupType.SpeedBoost, speedTimerText);
+            UpdatePowerupTimer(PowerupType.Magnet, magnetIcon, magnetTimerText);
+            UpdatePowerupTimer(PowerupType.Shield, shieldIcon, shieldTimerText);
+            UpdatePowerupTimer(PowerupType.SpeedBoost, speedIcon, speedTimerText);
         }
 
-        private void UpdatePowerupTimer(PowerupType type, TextMeshProUGUI timerText)
+        private void UpdatePowerupTimer(PowerupType type, GameObject icon, TextMeshProUGUI timerText)
         {
+            float remaining = PowerupManager.Instance.GetPowerupRemainingTime(type);
+            bool active = remaining > 0f;
+
+            if (icon != null && icon.activeSelf != active)
+                icon.SetActive(active);
+
             if (timerText == null) return;
 
-            float remaining = PowerupManager.Instance.GetPowerupRemainingTime(type);
-            if (remaining > 0)
-            {
+            if (active)
                 timerText.text = $"{Mathf.CeilToInt(remaining)}s";
-            }
+            else if (!string.IsNullOrEmpty(timerText.text))
+                timerText.text = string.Empty;
         }
 
         private GameObject GetPowerupIcon(PowerupType type)
@@ -155,11 +159,22 @@ namespace VRunner.UI
             }
         }
 
+        private TextMeshProUGUI GetPowerupTimerText(PowerupType type)
+        {
+            switch (type)
+            {
+                case PowerupType.Magnet: return magnetTimerText;
+                case PowerupType.Shield: return shieldTimerText;
+                case PowerupType.SpeedBoost: return speedTimerText;
+                default: return null;
+            }
+        }
+
         private void HideAllPowerupIcons()
         {
-            if (magnetIcon) magnetIcon.SetActive(false);
-            if (shieldIcon) shieldIcon.SetActive(false);
-            if (speedIcon) speedIcon.SetActive(false);
+            HidePowerupIcon(PowerupType.Magnet);
+            HidePowerupIcon(PowerupType.Shield);
+            HidePowerupIcon(PowerupType.SpeedBoost);
         }
     }
 }

@@ -63,6 +63,7 @@ namespace VRunner.Gameplay.Player
         [SerializeField] private float maxSpeed = 30f;
 
         private float baseSpeed;
+        private float speedBoostMultiplier = 1f;
 
         [Header("Debug")]
         [SerializeField] private bool showDebugUI = false;
@@ -275,7 +276,7 @@ namespace VRunner.Gameplay.Player
                 currentSpeed = Mathf.Min(currentSpeed, maxForwardSpeed);
             }
 
-            Vector3 moveVector = transform.forward * currentSpeed;
+            Vector3 moveVector = transform.forward * (currentSpeed * speedBoostMultiplier);
             characterController.Move(moveVector * Time.deltaTime);
         }
 
@@ -541,11 +542,12 @@ namespace VRunner.Gameplay.Player
         public void ResetSpeed()
         {
             currentSpeed = forwardSpeed;
+            speedBoostMultiplier = 1f;
         }
 
         public void SetSpeedMultiplier(float multiplier)
         {
-            currentSpeed *= multiplier;
+            speedBoostMultiplier = Mathf.Max(0.1f, multiplier);
         }
 
         /// <summary>

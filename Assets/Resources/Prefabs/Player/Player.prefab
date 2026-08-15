@@ -414,6 +414,7 @@ GameObject:
   - component: {fileID: 5534644309887652400}
   - component: {fileID: 6188057077194210863}
   - component: {fileID: 2664568023480931852}
+  - component: {fileID: 2685873330618342759}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -528,6 +529,8 @@ MonoBehaviour:
   jumpHeight: 3
   coyoteTime: 0.1
   jumpBufferTime: 0.1
+  holeFallDepth: 1.5
+  holeFallDuration: 0.5
   playerAnimation: {fileID: 2664568023480931852}
   enableSpeedRampup: 1
   speedIncreaseRate: 0.1
@@ -575,7 +578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinMagnet
   magnetActive: 0
-  magnetRadius: 5
+  magnetRadius: 8
   coinLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -609,6 +612,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   animator: {fileID: 5201852185736830124}
   playerController: {fileID: 3670328256955093215}
+--- !u!114 &2685873330618342759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910264107840600656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29a261c05e2ef489cbee9267ac7b1d65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VRunner.Gameplay.Player.PowerupOrbitVFX
+  followTarget: {fileID: 1176468132690583718}
+  configs:
+  - type: 0
+    orbPrefab: {fileID: 264383428333254489, guid: 5b9dca2e3448e455b95ace7a0acc97d0, type: 3}
+    orbCount: 3
+    radius: 1.2
+    heightOffset: 1
+    angularSpeed: 200
+    bobAmplitude: 0.2
+    bobFrequency: 2.5
+  - type: 1
+    orbPrefab: {fileID: 2993143267574636236, guid: 2f1ab526319ca435f8303ecde67bb147, type: 3}
+    orbCount: 4
+    radius: 1.4
+    heightOffset: 1
+    angularSpeed: 120
+    bobAmplitude: 0.2
+    bobFrequency: 2.5
+  - type: 2
+    orbPrefab: {fileID: 3385286334996988769, guid: 971362b602a09411da06b1ed772718aa, type: 3}
+    orbCount: 3
+    radius: 1.1
+    heightOffset: 1
+    angularSpeed: 280
+    bobAmplitude: 0.2
+    bobFrequency: 2.5
 --- !u!1 &7943447657958005581
 GameObject:
   m_ObjectHideFlags: 0
