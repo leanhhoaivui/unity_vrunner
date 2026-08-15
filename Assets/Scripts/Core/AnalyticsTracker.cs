@@ -1,33 +1,37 @@
 using UnityEngine;
-public class AnalyticsTracker : MonoBehaviour
+
+namespace VRunner.Core
 {
-    private void OnEnable()
+    public class AnalyticsTracker : MonoBehaviour
     {
-        if (EventManager.Instance != null)
+        private void OnEnable()
         {
-            EventManager.Instance.OnGameOver += LogGameOver;
-            EventManager.Instance.OnDistanceMilestone += LogMilestone;
+            if (EventManager.Instance != null)
+            {
+                EventManager.Instance.OnGameOver += LogGameOver;
+                EventManager.Instance.OnDistanceMilestone += LogMilestone;
+            }
         }
-    }
-    
-    private void OnDisable()
-    {
-        
-        if (EventManager.Instance != null)
+
+        private void OnDisable()
         {
-            EventManager.Instance.OnGameOver -= LogGameOver;
-            EventManager.Instance.OnDistanceMilestone -= LogMilestone;
+
+            if (EventManager.Instance != null)
+            {
+                EventManager.Instance.OnGameOver -= LogGameOver;
+                EventManager.Instance.OnDistanceMilestone -= LogMilestone;
+            }
         }
-    }
-    
-    private void LogGameOver()
-    {
-        Debug.Log("Analytics: Game Over");
-        // Send to analytics service
-    }
-    
-    private void LogMilestone(float distance)
-    {
-        Debug.Log($"Analytics: Milestone {distance}m");
+
+        private void LogGameOver()
+        {
+            Debug.Log("Analytics: Game Over");
+            // Send to analytics service
+        }
+
+        private void LogMilestone(float distance)
+        {
+            Debug.Log($"Analytics: Milestone {distance}m");
+        }
     }
 }

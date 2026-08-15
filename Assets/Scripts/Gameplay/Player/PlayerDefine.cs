@@ -1,6 +1,9 @@
-// PlayerDefine.cs
-public enum PlayerState
+namespace VRunner.Gameplay.Player
 {
-    Normal,
-    Dying
+    // PlayerDefine.cs
+    public enum PlayerState
+    {
+        Normal,
+        Dying
+    }
 }

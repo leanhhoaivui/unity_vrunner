@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using VRunner.Utilities;
 
 /// <summary>
 /// Editor tool: chụp ảnh Game View khi đang Play Mode (runtime).
