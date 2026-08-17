@@ -1,54 +1,58 @@
 using UnityEngine;
 using System.Collections;
+using VRunner.Core;
 
-public class CameraShake : MonoBehaviour
+namespace VRunner.Gameplay.Player
 {
-    public static CameraShake Instance;
-    
-    private Vector3 originalPosition;
-    private Coroutine shakeCoroutine;
-    
-    private void Awake()
+    public class CameraShake : MonoBehaviour
     {
-        Instance = this;
-    }
-    
-    private void Start()
-    {
-        originalPosition = transform.localPosition;
-        
-        // Subscribe to hit event
-        if (EventManager.Instance != null)
+        public static CameraShake Instance;
+
+        private Vector3 originalPosition;
+        private Coroutine shakeCoroutine;
+
+        private void Awake()
         {
-            EventManager.Instance.OnObstacleHit += (type) => Shake(0.3f, 0.3f);
+            Instance = this;
         }
-    }
-    
-    public void Shake(float duration, float magnitude)
-    {
-        if (shakeCoroutine != null)
+
+        private void Start()
         {
-            StopCoroutine(shakeCoroutine);
+            originalPosition = transform.localPosition;
+
+            // Subscribe to hit event
+            if (EventManager.Instance != null)
+            {
+                EventManager.Instance.OnObstacleHit += (type) => Shake(0.3f, 0.3f);
+            }
         }
-        
-        shakeCoroutine = StartCoroutine(ShakeCoroutine(duration, magnitude));
-    }
-    
-    private IEnumerator ShakeCoroutine(float duration, float magnitude)
-    {
-        float elapsed = 0f;
-        
-        while (elapsed < duration)
+
+        public void Shake(float duration, float magnitude)
         {
-            float x = Random.Range(-1f, 1f) * magnitude;
-            float y = Random.Range(-1f, 1f) * magnitude;
-            
-            transform.localPosition = originalPosition + new Vector3(x, y, 0f);
-            
-            elapsed += Time.deltaTime;
-            yield return null;
+            if (shakeCoroutine != null)
+            {
+                StopCoroutine(shakeCoroutine);
+            }
+
+            shakeCoroutine = StartCoroutine(ShakeCoroutine(duration, magnitude));
         }
-        
-        transform.localPosition = originalPosition;
+
+        private IEnumerator ShakeCoroutine(float duration, float magnitude)
+        {
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                float x = Random.Range(-1f, 1f) * magnitude;
+                float y = Random.Range(-1f, 1f) * magnitude;
+
+                transform.localPosition = originalPosition + new Vector3(x, y, 0f);
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            transform.localPosition = originalPosition;
+        }
     }
 }
