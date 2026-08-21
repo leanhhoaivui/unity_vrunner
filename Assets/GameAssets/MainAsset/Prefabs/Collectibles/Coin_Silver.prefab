@@ -261,7 +261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 02d4819c9c77f4128b74b3f6fa6ed2ab, type: 3}
       propertyPath: m_Name
-      value: item-coin-silver
+      value: coin-silver
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 02d4819c9c77f4128b74b3f6fa6ed2ab, type: 3}
       propertyPath: m_Layer

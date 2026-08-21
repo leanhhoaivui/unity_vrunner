@@ -71,6 +71,7 @@ MonoBehaviour:
   rotationSpeed: 90
   floatAmplitude: 0.3
   floatFrequency: 2
+  collectVFX: {fileID: 0}
 --- !u!1001 &4383463954981852474
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -137,7 +138,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 64287c80e920c471d8d7eea6e0cdc252, type: 3}
       propertyPath: m_Name
-      value: item-box
+      value: powerup_magnet
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

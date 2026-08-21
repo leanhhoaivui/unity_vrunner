@@ -134,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 693d180657c98485c9c444d38374bee9, type: 3}
       propertyPath: m_Name
-      value: item-cone
+      value: obstacle_ground
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 693d180657c98485c9c444d38374bee9, type: 3}
       propertyPath: m_Layer
