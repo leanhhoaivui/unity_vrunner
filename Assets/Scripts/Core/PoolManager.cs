@@ -13,9 +13,9 @@ namespace VRunner.Core
         public static PoolManager Instance { get; private set; }
 
         [Header("Segment Pooling")]
-        [SerializeField] private GameConfig gameConfig;
         [SerializeField] private int segmentPoolSize = 10;
 
+        private GameConfig gameConfig;
         private ObjectPool<Segment>[] segmentPools;
         private Segment[] segmentPrefabs;
         private Transform segmentPoolParent;
@@ -23,8 +23,9 @@ namespace VRunner.Core
 
 
         [Header("Coin Pooling")][Header("VFX Pooling")]
-        [SerializeField] private PooledVFX[] vfxPrefabs;
         [SerializeField] private int vfxPoolSize = 10;
+
+        private PooledVFX[] vfxPrefabs;
 
         private ObjectPool<PooledVFX>[] vfxPools;
         private Dictionary<int, int> vfxPrefabIdToPoolIndex = new Dictionary<int, int>();
@@ -39,6 +40,8 @@ namespace VRunner.Core
                 return;
             }
             Instance = this;
+
+            gameConfig = AssetProvider.Load<GameConfig>("Data/DefaultGameConfig");
 
             InitializePools();
         }
@@ -86,6 +89,7 @@ namespace VRunner.Core
 
         private void InitializeVFXPools()
         {
+            vfxPrefabs = AssetProvider.LoadAll<PooledVFX>("VFX");
             vfxPoolParent = new GameObject("VFXPool").transform;
             vfxPoolParent.SetParent(transform);
             vfxPools = new ObjectPool<PooledVFX>[vfxPrefabs.Length];

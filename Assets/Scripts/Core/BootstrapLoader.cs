@@ -7,18 +7,12 @@ namespace VRunner.Core
     {
         [SerializeField] private string nextSceneName = "MenuScene";
 
-        [Header("Core managers")]
-        [SerializeField] private GameObject eventManagerPrefab;
-        [SerializeField] private GameObject saveManagerPrefab;
-        [SerializeField] private GameObject audioManagerPrefab;
-        [SerializeField] private GameObject inputManagerPrefab;
-
         private void Awake()
         {
-            SpawnIfNeeded(eventManagerPrefab, EventManager.Instance == null);
-            SpawnIfNeeded(saveManagerPrefab, SaveManager.Instance == null);
-            SpawnIfNeeded(audioManagerPrefab, AudioManager.Instance == null);
-            SpawnIfNeeded(inputManagerPrefab, InputManager.Instance == null);
+            SpawnIfNeeded("Prefabs/Managers/EventManager", EventManager.Instance == null);
+            SpawnIfNeeded("Prefabs/Managers/SaveManager", SaveManager.Instance == null);
+            SpawnIfNeeded("Prefabs/Managers/AudioManager", AudioManager.Instance == null);
+            SpawnIfNeeded("Prefabs/Managers/InputManager", InputManager.Instance == null);
         }
 
         private void Start()
@@ -26,9 +20,11 @@ namespace VRunner.Core
             SceneManager.LoadScene(nextSceneName);
         }
 
-        private static void SpawnIfNeeded(GameObject prefab, bool needed)
+        private static void SpawnIfNeeded(string resourcePath, bool needed)
         {
-            if (!needed || prefab == null) return;
+            if (!needed) return;
+            GameObject prefab = AssetProvider.Load<GameObject>(resourcePath);
+            if (prefab == null) return;
             Instantiate(prefab);
             // Awake trên prefab sẽ set Instance + DontDestroyOnLoad
         }
