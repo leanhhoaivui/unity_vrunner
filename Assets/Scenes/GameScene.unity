@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: e99e4e84744dd41988c4e11b292d11ae, type: 2}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -3465,6 +3465,7 @@ GameObject:
   m_Component:
   - component: {fileID: 919006606}
   - component: {fileID: 919006607}
+  - component: {fileID: 919006608}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3508,6 +3509,19 @@ MonoBehaviour:
   powerupManager: {fileID: 1816868712}
   gameOverUI: {fileID: 1853332525}
   pauseMenu: {fileID: 1166336316}
+--- !u!114 &919006608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919006605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5732017971594e60a6fbd14189d3afdd, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SkyboxLoader
+  skyboxResourcePath: Texture/Skybox/mat_skybox-day
 --- !u!1 &940581978
 GameObject:
   m_ObjectHideFlags: 0
