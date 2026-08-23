@@ -1,4 +1,5 @@
 using UnityEngine;
+using VRunner.Gameplay.Player;
 
 namespace VRunner.Core
 {
@@ -34,11 +35,11 @@ namespace VRunner.Core
             // Auto find target nếu chưa assign
             if (autoFindTarget && target == null)
             {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                Transform player = FindPlayerTransform();
                 if (player != null)
                 {
                     // Tìm CameraTarget child
-                    Transform cameraTarget = player.transform.Find("CameraTarget");
+                    Transform cameraTarget = player.Find("CameraTarget");
                     if (cameraTarget != null)
                     {
                         target = cameraTarget;
@@ -47,19 +48,19 @@ namespace VRunner.Core
                     else
                     {
                         // Fallback: follow player directly
-                        target = player.transform;
+                        target = player;
                         Debug.LogWarning("CameraFollow: CameraTarget not found, following Player directly");
                     }
 
                     // Set lookAtTarget
                     if (lookAtTarget == null)
                     {
-                        lookAtTarget = player.transform;
+                        lookAtTarget = player;
                     }
                 }
                 else
                 {
-                    Debug.LogError("CameraFollow: Player not found! Make sure Player has 'Player' tag.");
+                    Debug.LogError("CameraFollow: Player not found! Make sure PlayerSpawner ran and prefab has 'Player' tag.");
                 }
             }
 
@@ -68,6 +69,16 @@ namespace VRunner.Core
             {
                 transform.position = target.position + offset;
             }
+        }
+
+        private static Transform FindPlayerTransform()
+        {
+            GameObject tagged = GameObject.FindGameObjectWithTag("Player");
+            if (tagged != null)
+                return tagged.transform;
+
+            PlayerController controller = Object.FindFirstObjectByType<PlayerController>();
+            return controller != null ? controller.transform : null;
         }
 
         private void LateUpdate()

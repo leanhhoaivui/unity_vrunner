@@ -8,8 +8,7 @@ namespace VRunner.Gameplay.Level
 {
     public class SegmentManager : MonoBehaviour
     {
-        [Header("Game Config")]
-        [SerializeField] private GameConfig gameConfig;
+        private GameConfig gameConfig;
 
         [Header("Settings")]
         [SerializeField] private int initialSegmentCount = 5;
@@ -31,6 +30,11 @@ namespace VRunner.Gameplay.Level
         private List<string> recentSegmentTypes = new List<string>();
 
         #region MonoBehaviour
+        private void Awake()
+        {
+            gameConfig = AssetProvider.Load<GameConfig>("Data/DefaultGameConfig");
+        }
+
         private void Start()
         {
             playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;

@@ -13,25 +13,36 @@ namespace VRunner.Core
         [SerializeField] private AudioSource musicSource;
         [SerializeField] private AudioSource sfxSource;
 
-        [Header("Music")]
-        [SerializeField] private AudioClip menuMusic;
-        [SerializeField] private AudioClip gameMusic;
-
-        [Header("SFX")]
-        [SerializeField] private AudioClip jumpSound;
-        [SerializeField] private AudioClip landSound;
-        [SerializeField] private AudioClip coinSound;
-        [SerializeField] private AudioClip powerupSound;
-        [SerializeField] private AudioClip hitSound;
-        [SerializeField] private AudioClip deathSound;
-        [SerializeField] private AudioClip buttonClick;
+        private AudioClip menuMusic;
+        private AudioClip gameMusic;
+        private AudioClip jumpSound;
+        private AudioClip landSound;
+        private AudioClip coinSound;
+        private AudioClip powerupSound;
+        private AudioClip hitSound;
+        private AudioClip deathSound;
+        private AudioClip buttonClick;
 
         private void Awake()
         {
             if (Instance != null) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            LoadClips();
             SetupAudioSources();
+        }
+
+        private void LoadClips()
+        {
+            menuMusic = AssetProvider.Load<AudioClip>("Sound/Music/bg_001");
+            gameMusic = AssetProvider.Load<AudioClip>("Sound/Music/bg_001");
+            jumpSound = AssetProvider.Load<AudioClip>("Sound/SFX/sfx_jump");
+            landSound = AssetProvider.Load<AudioClip>("Sound/SFX/sfx_land");
+            coinSound = AssetProvider.Load<AudioClip>("Sound/SFX/sfx_coin");
+            powerupSound = AssetProvider.Load<AudioClip>("Sound/SFX/sfx_powerup");
+            hitSound = AssetProvider.Load<AudioClip>("Sound/SFX/sfx_hit");
+            deathSound = AssetProvider.Load<AudioClip>("Sound/SFX/sfx_lose"); // giu nguyen hanh vi hien tai
+            buttonClick = AssetProvider.Load<AudioClip>("Sound/UI/ui_btn_click");
         }
         private void Start()
         {

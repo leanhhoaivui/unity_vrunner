@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRunner.Core;
 using VRunner.Data;
+using System;
+using Random = UnityEngine.Random;
 
 namespace VRunner.Gameplay.Player
 {
@@ -10,17 +12,18 @@ namespace VRunner.Gameplay.Player
     /// </summary>
     public class PowerupOrbitVFX : MonoBehaviour
     {
-        [System.Serializable]
+        [Serializable]
         public class OrbitConfig
         {
             public PowerupType type;
-            public GameObject orbPrefab;
             [Range(1, 8)] public int orbCount = 3;
             public float radius = 1.2f;
             public float heightOffset = 1f;
             public float angularSpeed = 180f;
             public float bobAmplitude = 0.2f;
             public float bobFrequency = 2.5f;
+
+            [NonSerialized] public GameObject orbPrefab;
         }
 
         [SerializeField] private Transform followTarget;
@@ -47,9 +50,25 @@ namespace VRunner.Gameplay.Player
 
             foreach (var cfg in configs)
             {
-                if (cfg == null || cfg.orbPrefab == null) continue;
+                if (cfg == null) continue;
+                string path = GetOrbResourcePath(cfg.type);
+                if (path == null) continue;
+
+                cfg.orbPrefab = AssetProvider.Load<GameObject>(path);
+                if (cfg.orbPrefab == null) continue;
                 if (!configLookup.ContainsKey(cfg.type))
                     configLookup[cfg.type] = cfg;
+            }
+        }
+
+        private static string GetOrbResourcePath(PowerupType type)
+        {
+            switch (type)
+            {
+                case PowerupType.Magnet: return "VFX/VFX_OrbitOrb_Magnet";
+                case PowerupType.Shield: return "VFX/VFX_OrbitOrb_Shield";
+                case PowerupType.SpeedBoost: return "VFX/VFX_OrbitOrb_Speed";
+                default: return null;
             }
         }
 
