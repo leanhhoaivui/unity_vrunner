@@ -8,7 +8,7 @@ namespace VRunner.Core
     public class BootstrapLoader : MonoBehaviour
     {
         [SerializeField] private string nextSceneName = "MenuScene";
-        [SerializeField] private AssetProvider.SourceMode assetSourceMode = AssetProvider.SourceMode.Resources;
+        [SerializeField] private AssetProvider.SourceMode assetSourceMode = AssetProvider.SourceMode.Editor;
         [SerializeField] private string remoteBundleBaseUrl = "https://cdn.hoaivui.com/assetbundles";
         [SerializeField] private BootstrapLoadingUI loadingUI;
 
